@@ -1,0 +1,36 @@
+.game-console-page {
+  @include vert-align;
+}
+
+.game-console-page-content {
+  @include vert-align__child;
+  margin-top: -200px;
+  max-width: 400px;
+}
+
+.console-lobby {
+  h1 {
+    font-size: 35px;
+  }
+
+  p, ul {
+    text-align: left;
+  }
+
+  p {
+    font-size: 20px;
+  }
+
+  ul {
+    @include unstyled-list;
+  }
+}
+
+.console-about {
+  font-size: 20px;
+}
+
+.console-questions-list {
+  @include unstyled-list;
+  text-align: left;
+}

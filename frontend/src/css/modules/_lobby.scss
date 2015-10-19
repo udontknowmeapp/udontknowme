@@ -1,0 +1,22 @@
+.lobby {
+  @include vert-align;
+}
+
+.lobby-content {
+  @include vert-align__child;
+  margin-top: -200px;
+}
+
+.lobby-content-list {
+  text-align: left;
+}
+
+.lobby-content-list__players {
+  @include unstyled-list;
+  margin-top: 10px;
+}
+
+.lobby-button {
+  @include base-button;
+  margin-top: 20px;
+}

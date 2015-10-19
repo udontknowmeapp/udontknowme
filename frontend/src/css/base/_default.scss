@@ -1,0 +1,16 @@
+@import "variables";
+
+body {
+  font-family: $font-body;
+  font-size: 100%;
+  color: $color-body;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app,
+.body {
+  height: 100%;
+}

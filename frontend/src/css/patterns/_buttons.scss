@@ -1,0 +1,23 @@
+@mixin link-button {
+  text-decoration: none;
+  border: 1px solid $color-blue;
+  border-radius: 2.5px;
+  color: $color-blue;
+  padding: 10px;
+}
+
+@mixin base-button {
+  background-color: #fff;
+  font-size: 18px;
+  font-family: $font-body;
+  border: 1px solid $color-blue;
+  border-radius: 2.5px;
+  color: $color-blue;
+  padding: 10px 20px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: $color-blue;
+    color: #fff;
+  }
+}

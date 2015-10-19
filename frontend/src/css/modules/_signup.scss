@@ -1,0 +1,27 @@
+.player-signup {
+  @include vert-align;
+}
+
+.player-signup-content {
+  @include vert-align__child;
+  margin-top: -200px;
+}
+
+.player-signup-content__button {
+  @include base-button;
+  margin-top: 40px;
+}
+
+
+.player-signup-content__input {
+  font-family: $font-body;
+  font-size: 25px;
+  padding: 10px;
+  border: none;
+  border-bottom: 1px solid black;
+
+  &:focus {
+    outline: none;
+    border-bottom: 1px solid $color-blue;
+  }
+}

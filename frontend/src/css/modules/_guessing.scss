@@ -1,0 +1,21 @@
+.guessing-page {
+  @include vert-align;
+}
+
+.guessing-page-content {
+  @include vert-align__child;
+  margin-top: -200px;
+}
+
+.guessing-page-content__list {
+  @include unstyled-list;
+
+  li {
+    padding: 10px 0px;
+  }
+}
+
+.guessing-page-content__button {
+  @include base-button;
+  padding: 10px;
+}

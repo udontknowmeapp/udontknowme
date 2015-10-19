@@ -1,0 +1,13 @@
+{
+    "name": "U Don't Know Me",
+    "description": "A fun game.",
+    "repository": "https://github.com/udontknowmeapp/udontknowme",
+    "success_url": "/",
+    "keywords": [
+        "game",
+        "webgame"
+    ],
+    "env": {
+        "BUILDPACK_URL": "https://github.com/udontknowmeapp/heroku-buildpack-udontknowme"
+    }
+}

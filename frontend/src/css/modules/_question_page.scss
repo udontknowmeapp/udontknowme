@@ -1,0 +1,26 @@
+.question-page {
+  @include vert-align;
+}
+
+.question-page-content {
+  @include vert-align__child;
+  margin-top: -200px;
+}
+
+.question-page-content__button {
+  @include base-button;
+  margin-top: 40px;
+}
+
+.question-page-content__input {
+  font-family: $font-body;
+  font-size: 25px;
+  padding: 10px;
+  border: none;
+  border-bottom: 1px solid black;
+
+  &:focus {
+    outline: none;
+    border-bottom: 1px solid $color-blue;
+  }
+}
