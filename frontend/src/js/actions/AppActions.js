@@ -16,7 +16,7 @@ class AppActions {
   }
 
   connection(session) {
-    const conn = new ServerConnection(SERVER_URI);
+    const conn = new ServerConnection();
 
     if (session) {
       const { player_type, player_name } = session;

@@ -2,13 +2,14 @@ import messages from '../constants/messagesConstants';
 import states from '../constants/stateConstants';
 import AppActions from '../actions/AppActions';
 import ConsoleActions from '../actions/ConsoleActions';
+import { getSocketUri } from './webSocketUtils';
 
 export default class ServerConnection extends Object {
 
   constructor(uri) {
     super();
 
-    this.socket = new WebSocket(uri);
+    this.socket = new WebSocket(getSocketUri());
 
     this.socket.onmessage = (payload) => {
       const messageData = JSON.parse(payload.data);

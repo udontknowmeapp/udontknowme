@@ -5,7 +5,6 @@ var HtmlWebpackPlugin   = require('html-webpack-plugin');
 
 var configPlugin = new webpack.DefinePlugin({
   DEPLOY: JSON.stringify(config.get('deploy')),
-  SERVER_URI: JSON.stringify(config.get('socket.url')),
   'process.env': {
     NODE_ENV: JSON.stringify(config.get('env'))
   }
