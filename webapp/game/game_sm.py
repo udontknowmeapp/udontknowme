@@ -23,9 +23,9 @@ class GameStateMachine(object):
 
     def new_game(self):
         self.game = Game()  # new game
-        self.state = 'lobby'  # STATE CHANGE
+        self.current_state = 'lobby'  # STATE CHANGE
         message = self.blank_message()
-        message['state'] = self.state
+        message['state'] = self.current_state
         message['data']['message'] = 'new_game'
         message['data']['players'] = []
         return message
