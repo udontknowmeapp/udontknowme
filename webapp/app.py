@@ -37,8 +37,8 @@ class UDKMAppHandler(tornado.web.RequestHandler):
 
 urls = [
     (r"/play", UDKMWebSocket),
-    (r"/", UDKMAppHandler),
     (r"/assets/(.*)", tornado.web.StaticFileHandler, {'path': settings.WEB_STATIC_PATH}),
+    (r"/.*", UDKMAppHandler),
 ]
 
 application = tornado.web.Application(
