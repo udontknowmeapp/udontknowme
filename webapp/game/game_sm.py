@@ -65,7 +65,7 @@ class GameStateMachine(object):
             return self.message_format_error('Improperly Formatted Message')
         if message == 'identify':
             return self.identify(player_type, player_name, message=message)
-        if message == 'new_name':
+        if message == 'new_game':
             return self.new_game()
         else:
             return self.states[self.current_state](player_type=player_type, player_name=player_name, message=message)
