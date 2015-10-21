@@ -1,10 +1,8 @@
 import merge from 'lodash/object/merge';
 import indexOf from 'lodash/array/indexOf';
 import {
-  UPDATE_PLAYER_NAME,
-  SET_QUESTION_INFO,
-  IS_GUESS_SUBMITTED,
-  RESET_AND_END
+  rootActionTypes,
+  playerActionTypes as types
 } from '../constants/actionConstants';
 
 const initialState = {
@@ -16,10 +14,10 @@ const initialState = {
 
 export default function root(state = initialState, action) {
   switch(action.type) {
-    case UPDATE_PLAYER_NAME:
+    case types.UPDATE_PLAYER_NAME:
       return merge({}, state, { playerName: action.playerName });
 
-    case SET_QUESTION_INFO:
+    case types.SET_QUESTION_INFO:
       const { playerName } = state;
       const { about, answers } = action;
 
@@ -29,12 +27,12 @@ export default function root(state = initialState, action) {
         answerSubmitted: indexOf(answers, playerName) > -1 ? true : false
       });
 
-    case IS_GUESS_SUBMITTED:
+    case types.IS_GUESS_SUBMITTED:
       return merge({}, state, {
         guessSubmitted: indexOf(action.guesses, state.playerName) > -1 ? true : false
       });
 
-    case RESET_AND_END:
+    case rootActionTypes.RESET_AND_END:
       return initialState;
 
     default:
