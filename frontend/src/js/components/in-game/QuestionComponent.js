@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import PlayerActions from '../../actions/PlayerActions';
 
-export default class QuestionPage extends Component {
+export default class QuestionComponent extends Component {
 
   static propTypes = {
     question: PropTypes.string,

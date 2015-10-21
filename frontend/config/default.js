@@ -12,11 +12,7 @@ module.exports = {
   webpack: {
     output: {
       path: path.join(__dirname, '../build/assets'),
-      htmlPath: 'index.html'
+      htmlPath: '../index.html'
     }
-  },
-  socket: {
-      url: (process.env.BASE_URL || 'ws://localhost:8000/play'),
-    port: (process.env.SOCKET_PORT || '')
   }
 };

@@ -1,15 +1,18 @@
 import React, { Component, PropTypes } from 'react';
+import TimerWrapper from '../../wrappers/TimerWrapper';
 
-export default class GuessesComponent extends Component {
+class GuessesComponent extends Component {
 
   static propTypes = {
+    conn: PropTypes.object,
+    timer: PropTypes.timer,
     question: PropTypes.string,
     answers: PropTypes.array,
     submittedGuesses: PropTypes.array
   }
 
   render() {
-    const { question, answers, submittedGuesses } = this.props;
+    const { timer, question, answers, submittedGuesses } = this.props;
 
     return (
       <div>
@@ -23,6 +26,7 @@ export default class GuessesComponent extends Component {
           }
         </ul>
         <br />
+        <p><strong>Seconds Left</strong> - {timer}</p>
         <br />
         <ul className='console-questions-list'>
           {
@@ -35,3 +39,5 @@ export default class GuessesComponent extends Component {
     );
   }
 }
+
+export default TimerWrapper(GuessesComponent);

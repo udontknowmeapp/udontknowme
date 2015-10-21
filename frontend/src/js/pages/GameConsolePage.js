@@ -61,11 +61,20 @@ export default class GameConsolePage extends Component {
   }
 
   renderQuestionAsk() {
-    const { question, questionAbout, submittedAnswers } = this.props;
+    const {
+      conn,
+      timer,
+      question,
+      questionAbout,
+      submittedAnswers
+    } = this.props;
+
     return (
       <div className='game-console-page'>
         <div className='game-console-page-content'>
           <QuestionComponent
+            conn={conn}
+            timer={timer}
             question={question}
             about={questionAbout}
             submittedAnswers={submittedAnswers}
@@ -76,11 +85,20 @@ export default class GameConsolePage extends Component {
   }
 
   renderQuestionGuess() {
-    const { question, answers, submittedGuesses } = this.props;
+    const {
+      conn,
+      timer,
+      question,
+      answers,
+      submittedGuesses
+    } = this.props;
+
     return (
       <div className='game-console-page'>
         <div className='game-console-page-content'>
           <GuessesComponent
+            conn={conn}
+            timer={timer}
             question={question}
             answers={answers}
             submittedGuesses={submittedGuesses}
@@ -99,8 +117,6 @@ export default class GameConsolePage extends Component {
       questionAbout,
       appState
     } = this.props;
-
-    console.log('Results...');
 
     return (
       <div className='game-console-page'>

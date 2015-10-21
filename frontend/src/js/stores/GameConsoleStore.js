@@ -11,6 +11,8 @@ class GameConsoleStore {
     this.submittedGuesses = [];
     this.guessResults = [];
     this.points = [];
+    this.timer = 0;
+    this.timerInterval = null;
   }
 
   onSetPlayers(players) {
@@ -41,6 +43,29 @@ class GameConsoleStore {
     this.points = points;
   }
 
+  onSetComponentTimer(timer) {
+    this.timer = timer;
+    this.timerInterval = setInterval(() => this.decrementTimer(), 1000);
+  }
+
+  onResetTimer() {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+    this.timer = 0;
+  }
+
+  decrementTimer() {
+    if (this.timer === 1) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+      this.timer = 0;
+    } else {
+      this.timer--;
+    }
+  }
+
   onResetAndEnd() {
     this.players = [];
     this.questionAbout = '';
@@ -48,6 +73,8 @@ class GameConsoleStore {
     this.submittedGuesses = [];
     this.guessResults = [];
     this.points = [];
+    this.timer = 0;
+    this.timerInterval = null;
   }
 }
 

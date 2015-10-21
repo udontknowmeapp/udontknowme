@@ -30,7 +30,8 @@ export default class App extends Component {
     submittedAnswers: PropTypes.array.isRequired,
     submittedGuesses: PropTypes.array.isRequired,
     guessResults: PropTypes.array.isRequired,
-    points: PropTypes.array.isRequired
+    points: PropTypes.array.isRequired,
+    timer: PropTypes.number.isRequired
   }
 
   static getStores() {

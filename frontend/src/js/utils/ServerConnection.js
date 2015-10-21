@@ -35,6 +35,11 @@ export default class ServerConnection extends Object {
           break;
       }
 
+      if (data.hasOwnProperty('timer')) {
+        const { timer } = data;
+        ConsoleActions.setComponentTimer(timer);
+      }
+
       AppActions.setAppState(state);
     }
   }

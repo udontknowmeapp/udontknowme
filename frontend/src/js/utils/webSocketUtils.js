@@ -8,6 +8,11 @@ export function getSocketUri() {
     socketUri = 'ws://';
   }
 
-  socketUri += `${loc.host}/play`;
+  if (process.env.NODE_ENV === 'production') {
+    socketUri += `${loc.host}/play`;
+  } else {
+    socketUri += `${loc.hostname}:8000/play`;
+  }
+
   return socketUri;
 }

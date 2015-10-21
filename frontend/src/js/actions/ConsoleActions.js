@@ -11,7 +11,9 @@ class ConsoleActions {
       'setGuesses',
       'addGuessResults',
       'addPoints',
-      'resetAndEnd'
+      'resetAndEnd',
+      'setComponentTimer',
+      'resetTimer'
     );
   }
 

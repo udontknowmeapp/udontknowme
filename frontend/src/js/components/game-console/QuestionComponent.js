@@ -1,20 +1,25 @@
 import React, { Component, PropTypes } from 'react';
+import TimerWrapper from '../../wrappers/TimerWrapper';
 
-export default class QuestionComponent extends Component {
+class QuestionComponent extends Component {
 
   static propTypes = {
+    conn: PropTypes.object,
+    timer: PropTypes.number,
     question: PropTypes.string,
     about: PropTypes.string,
     submittedAnswers: PropTypes.array
   }
 
   render() {
-    const { question, about, submittedAnswers } = this.props;
+    const { timer, question, about, submittedAnswers } = this.props;
 
     return (
       <div>
         <h2>{question}</h2>
         <p className='console-about'>This one's about {about}.</p>
+        <br />
+        <p><strong>Seconds Left</strong> - {timer}</p>
         <br />
         <ul className='console-questions-list'>
           {submittedAnswers.map(player => {
@@ -25,3 +30,5 @@ export default class QuestionComponent extends Component {
     );
   }
 }
+
+export default TimerWrapper(QuestionComponent);

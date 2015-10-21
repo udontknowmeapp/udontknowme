@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import AppActions from '../../actions/AppActions';
 import playerTypes from '../../constants/playerTypeConstants';
 import states from '../../constants/stateConstants';
 import messages from '../../constants/messagesConstants';
@@ -15,6 +16,7 @@ export default class ResultsComponent extends Component {
 
   constructor(props) {
     super(props);
+    AppActions.resetTimer();
     this.showNext();
   }
 
