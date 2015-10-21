@@ -13,7 +13,6 @@ export default function TimerWrapper(WrappedComponent) {
     constructor(props) {
       super(props);
 
-      // First, reset a rogue timer
       ConsoleActions.resetTimer();
 
       const { conn } = this.props;
