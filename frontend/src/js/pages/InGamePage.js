@@ -1,8 +1,14 @@
 import React, { Component, PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
 import LobbyComponent from '../components/in-game/LobbyComponent';
 import QuestionComponent from '../components/in-game/QuestionComponent';
 import GuessingComponent from '../components/in-game/GuessingComponent';
 import states from '../constants/stateConstants';
+import {
+  startGame,
+  submitAnswer,
+  submitGuess
+} from '../actions/playerActions';
 
 export default class InGamePage extends Component {
 
@@ -11,6 +17,7 @@ export default class InGamePage extends Component {
     history: PropTypes.object,
 
     // app props
+    dispatch: PropTypes.func,
     app: PropTypes.shape({
       appState: PropTypes.string,
       question: PropTypes.string,
@@ -28,12 +35,7 @@ export default class InGamePage extends Component {
     // gameConsole props
     gameConsole: PropTypes.shape({
       players: PropTypes.array
-    }),
-
-    // playerActions props
-    startGame: PropTypes.func,
-    submitAnswer: PropTypes.func,
-    submitGuess: PropTypes.func
+    })
   }
 
   constructor(props) {
@@ -70,14 +72,15 @@ export default class InGamePage extends Component {
   }
 
   renderLobby() {
-    const { player, gameConsole, startGame } = this.props;
+    const { player, gameConsole, dispatch } = this.props;
+    const actions = bindActionCreators({ startGame }, dispatch);
 
     return (
       <span>
         <LobbyComponent
           playerName={player.playerName}
           players={gameConsole.players}
-          startGame={startGame}
+          actions={actions}
         />
       </span>
     );
@@ -92,7 +95,8 @@ export default class InGamePage extends Component {
   }
 
   renderQuestionAsk() {
-    const { app, player, submitAnswer } = this.props;
+    const { app, player, dispatch } = this.props;
+    const actions = bindActionCreators({ submitAnswer }, dispatch);
 
     return (
       <span>
@@ -101,14 +105,15 @@ export default class InGamePage extends Component {
           aboutMe={player.aboutMe}
           playerName={player.playerName}
           answerSubmitted={player.answerSubmitted}
-          submitAnswer={submitAnswer}
+          actions={actions}
         />
       </span>
     );
   }
 
   renderQuestionGuess() {
-    const { app, player, submitGuess } = this.props;
+    const { app, player, dispatch } = this.props;
+    const actions = bindActionCreators({ submitGuess }, dispatch);
 
     return (
       <span>
@@ -117,7 +122,7 @@ export default class InGamePage extends Component {
           aboutMe={player.aboutMe}
           guessSubmitted={player.guessSubmitted}
           playerName={player.playerName}
-          submitGuess={submitGuess}
+          actions={actions}
         />
       </span>
     );

@@ -1,10 +1,10 @@
 import 'babel-core/polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './app';
-import configureStore from './stores/configureStore';
+import Root from './root';
+import configureStore from './stores';
 
 require('../css/app.scss');
 
 const store = configureStore();
-ReactDOM.render(<App store={store} />, document.getElementById('app'));
+ReactDOM.render(<Root store={store} />, document.getElementById('app'));

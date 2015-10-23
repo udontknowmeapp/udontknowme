@@ -26,22 +26,36 @@ export function isGuessSubmitted(guesses) {
 }
 
 export function startGame() {
-  const { player } = getState();
-  sendMessage(playerTypes.PLAYER, player.playerName, messages.START);
+  return (dispatch, getState) => {
+    const { player } = getState();
+    return dispatch(
+      sendMessage(playerTypes.PLAYER, player.playerName, messages.START)
+    );
+  };
 }
 
 export function setPlayerName(name) {
-  sendMessage(playerTypes.PLAYER, name, messages.IDENTIFY);
-  setPlayerType(playerTypes.PLAYER);
-  return dispatch(updatePlayerName(name));
+  return [
+    setPlayerType(playerTypes.PLAYER),
+    updatePlayerName(name),
+    sendMessage(playerTypes.PLAYER, name, messages.IDENTIFY)
+  ];
 }
 
 export function submitAnswer(answer) {
-  const { player } = getState();
-  sendMessage(playerTypes.PLAYER, player.playerName, answer);
+  return (dispatch, getState) => {
+    const { player } = getState();
+    return dispatch(
+      sendMessage(playerTypes.PLAYER, player.playerName, answer)
+    );
+  };
 }
 
 export function submitGuess(answerForGuess) {
-  const { player } = getState();
-  sendMessage(playerTypes.PLAYER, player.playerName, answerForGuess);
+  return (dispatch, getState) => {
+    const { player } = getState();
+    return dispatch(
+      sendMessage(playerTypes.PLAYER, player.playerName, answerForGuess)
+    );
+  };
 }

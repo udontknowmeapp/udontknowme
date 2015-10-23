@@ -3,7 +3,7 @@ import states from '../constants/stateConstants';
 import { rootActionTypes as types } from '../constants/actionConstants';
 
 const initialState = {
-  conn: false,
+  conn: {},
   appState: states.INIT,
   playerType: '',
   question: '',

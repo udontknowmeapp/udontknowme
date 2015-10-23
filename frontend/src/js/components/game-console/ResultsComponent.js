@@ -1,6 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import playerTypes from '../../constants/playerTypeConstants';
-import messages from '../../constants/messagesConstants';
 
 export default class ResultsComponent extends Component {
 
@@ -9,15 +7,16 @@ export default class ResultsComponent extends Component {
     question: PropTypes.string,
     guessResults: PropTypes.array,
     points: PropTypes.array,
-    resetTimer: PropTypes.func,
-    getNextResults: PropTypes.func
+    actions: PropTypes.object
   }
 
   constructor(props) {
     super(props);
 
-    const { resetTimer } = this.props;
-    resetTimer();
+    /*
+    const { actions } = this.props;
+    actions.resetTimer();
+    */
     this.showNext();
   }
 
@@ -66,7 +65,7 @@ export default class ResultsComponent extends Component {
   }
 
   showNext() {
-    const { getNextResults } = this.props;
-    setTimeout(() => getNextResults(), 10000);
+    const { actions } = this.props;
+    setTimeout(() => actions.getNextResults(), 10000);
   }
 }

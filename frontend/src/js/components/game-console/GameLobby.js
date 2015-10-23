@@ -6,13 +6,13 @@ export default class GameLobby extends Component {
   static propTypes = {
     appState: PropTypes.string,
     players: PropTypes.array,
-    introCompleted: PropTypes.func
+    actions: PropTypes.obj
   }
 
   componentDidUpdate(prevProps) {
-    const { appState, introCompleted } = this.props;
+    const { appState, actions } = this.props;
     if (appState === states.INTRO && prevProps.appState === states.LOBBY) {
-      setTimeout(() => introCompleted(), 3000);
+      setTimeout(() => actions.introCompleted(), 3000);
     }
   }
 

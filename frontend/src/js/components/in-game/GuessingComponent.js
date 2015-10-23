@@ -9,7 +9,7 @@ export default class GuessingComponent extends Component {
     aboutMe: PropTypes.bool,
     guessSubmitted: PropTypes.bool,
     playerName: PropTypes.string,
-    submitGuess: PropTypes.func
+    actions: PropTypes.object
   }
 
   render() {
@@ -51,7 +51,7 @@ export default class GuessingComponent extends Component {
   }
 
   submitGuess(answerForGuess) {
-    const { submitGuess } = this.props;
-    submitGuess(answerForGuess);
+    const { actions } = this.props;
+    actions.submitGuess(answerForGuess);
   }
 }

@@ -5,11 +5,11 @@ export default class LobbyComponent extends Component {
   static propTypes = {
     playerName: PropTypes.string,
     players: PropTypes.array,
-    startGame: PropTypes.func
+    actions: PropTypes.object
   }
 
   render() {
-    const { playerName, players, startGame } = this.props;
+    const { playerName, players, actions } = this.props;
 
     return (
       <div className='lobby'>
@@ -23,7 +23,7 @@ export default class LobbyComponent extends Component {
             !players.length ||
               <button
                 className='lobby-button'
-                onClick={startGame}
+                onClick={actions.startGame}
               >Start Game</button>
           }
         </div>

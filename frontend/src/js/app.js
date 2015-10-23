@@ -1,19 +1,16 @@
 import React, { Component, PropTypes } from 'react';
-import merge from 'lodash/object/merge';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import renderRouteChildren from './utils/renderRouteChildren';
-import * as AppActions from './actions/appActions';
-import * as ConsoleActions from './actions/consoleActions';
-import * as PlayerActions from './actions/playerActions';
+import { connection } from './actions/appActions';
 
 class App extends Component {
 
   static propTypes = {
     // app props
+    dispatch: PropTypes.func.isRequired,
     app: PropTypes.shape({
-      conn: PropTypes.bool.isRequired,
-      appState: PropTypes.state.isRequired,
+      conn: PropTypes.object.isRequired,
+      appState: PropTypes.string.isRequired,
       playerType: PropTypes.string.isRequired,
       question: PropTypes.string.isRequired,
       answers: PropTypes.array.isRequired
@@ -22,7 +19,7 @@ class App extends Component {
     // player props
     player: PropTypes.shape({
       playerName: PropTypes.string.isRequired,
-      answerSubmtted: PropTypes.bool.isRequired,
+      answerSubmitted: PropTypes.bool.isRequired,
       guessSubmitted: PropTypes.bool.isRequired,
       aboutMe: PropTypes.bool.isRequired
     }).isRequired,
@@ -36,14 +33,14 @@ class App extends Component {
       guessResults: PropTypes.array.isRequired,
       points: PropTypes.array.isRequired,
       timer: PropTypes.number.isRequired
-    });
+    })
   }
 
   constructor(props) {
     super(props);
 
-    const { connection } = this.props;
-    connection();
+    const { dispatch } = this.props;
+    dispatch(connection(dispatch));
   }
 
   render() {
@@ -65,12 +62,4 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(merge(
-    AppActions,
-    ConsoleActions,
-    PlayerActions
-  ), dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps)(App);

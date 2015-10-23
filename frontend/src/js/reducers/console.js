@@ -41,13 +41,15 @@ export default function root(state = initialState, action) {
       return merge({}, state, { points: action.points });
 
     case types.SET_COMPONENT_TIMER:
-      const { timer, timerInterval } = action;
-      return merge({}, state, { timer, timerInterval });
+      return merge({}, state, {
+        timer: action.timer,
+        timerInterval:
+        action.timerInterval
+      });
 
     case types.RESET_TIMER:
-      const { timerInterval } = state;
-      if (timerInterval) {
-        clearInterval(timerInterval)
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval)
       }
 
       return merge({}, state, {
@@ -56,16 +58,15 @@ export default function root(state = initialState, action) {
       });
 
     case types.DECREMENT_TIMER:
-      const { timer, timerInterval } = state;
-      if (timer === 1) {
-        clearInterval(timerInterval);
+      if (state.timer === 1) {
+        clearInterval(state.timerInterval);
         return merge({}, state, {
           timerInterval: null,
           timer: 0
         });
       } else {
         return merge({}, state, {
-          timer: timer--
+          timer: state.timer--
         });
       }
 

@@ -1,6 +1,6 @@
 import messages from '../constants/messagesConstants';
 import playerTypes from '../constants/playerTypeConstants';
-import states from '../../constants/stateConstants';
+import states from '../constants/stateConstants';
 import { consoleActionTypes as types } from '../constants/actionConstants';
 import { sendMessage, setPlayerType } from './appActions';
 
@@ -11,7 +11,7 @@ export function setPlayers(players) {
   };
 }
 
-export function setQuestionInfo(answers, about) {
+export function setQuestionInfo(about, answers) {
   return {
     type: types.SET_QUESTION_INFO,
     answers,
@@ -41,11 +41,16 @@ export function addPoints(points) {
 }
 
 export function setComponentTimer(timer) {
-  let timerInterval = setInterval(() => decrementTimer(), 1000);
-  return {
-    type: types.SET_COMPONENT_TIMER,
-    timer,
-    timerInterval
+  return dispatch => {
+    let timerInterval = setInterval(() => {
+      dispatch(decrementTimer())
+    }, 1000);
+
+    return {
+      type: types.SET_COMPONENT_TIMER,
+      timer,
+      timerInterval
+    };
   };
 }
 
@@ -58,23 +63,31 @@ export function resetTimer() {
 }
 
 export function startTimer() {
-  sendMessage(playerTypes.CONSOLE, null, messages.START_TIMER);
+  return dispatch => dispatch(
+    sendMessage(playerTypes.CONSOLE, null, messages.START_TIMER)
+  );
 }
 
 export function identify() {
-  sendMessage(playerTypes.CONSOLE, null, messages.IDENTIFY);
-  return dispatch(setPlayerType(playerTypes.CONSOLE));
+  return [
+    setPlayerType(playerTypes.CONSOLE),
+    sendMessage(playerTypes.CONSOLE, null, messages.IDENTIFY)
+  ];
 }
 
 export function introCompleted() {
-  sendMessage(playerTypes.CONSOLE, null, messages.INTRO_COMPLETE);
+  return dispatch => dispatch(
+    sendMessage(playerTypes.CONSOLE, null, messages.INTRO_COMPLETE)
+  );
 }
 
 export function getNextResults() {
-  const { app } = getState();
-  sendMessage(
-    playerTypes.CONSOLE,
-    null,
-    app.appState === states.SHOW_RESULTS ? messages.RESULTS_COMPLETE : messages.POINTS_COMPLETE
-  );
+  return (dispatch, getState) => {
+    const { app } = getState();
+    return dispatch(sendMessage(
+      playerTypes.CONSOLE,
+      null,
+      app.appState === states.SHOW_RESULTS ? messages.RESULTS_COMPLETE : messages.POINTS_COMPLETE
+    ));
+  };
 }

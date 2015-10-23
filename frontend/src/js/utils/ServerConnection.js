@@ -1,15 +1,26 @@
 import messages from '../constants/messagesConstants';
 import states from '../constants/stateConstants';
-import AppActions from '../actions/AppActions';
-import ConsoleActions from '../actions/ConsoleActions';
 import { getSocketUri } from './webSocketUtils';
+import {
+  setPlayers,
+  addGuessResults,
+  addPoints,
+  setComponentTimer
+} from '../actions/consoleActions';
+import {
+  setAppState,
+  resetAndEnd,
+  updateQuestionInfo,
+  updateGuessesInfo
+} from '../actions/appActions';
 
 export default class ServerConnection extends Object {
 
-  constructor(uri) {
+  constructor(dispatch) {
     super();
 
     this.socket = new WebSocket(getSocketUri());
+    this.dispatch = dispatch;
 
     this.socket.onmessage = (payload) => {
       const messageData = JSON.parse(payload.data);
@@ -37,10 +48,10 @@ export default class ServerConnection extends Object {
 
       if (data.hasOwnProperty('timer')) {
         const { timer } = data;
-        ConsoleActions.setComponentTimer(timer);
+        this.dispatch(setComponentTimer(timer));
       }
 
-      AppActions.setAppState(state);
+      this.dispatch(setAppState(state));
     }
   }
 
@@ -54,32 +65,27 @@ export default class ServerConnection extends Object {
 
   handleLobbyState(data) {
     const { players, message } = data;
-
     if (message === messages.NEW_GAME) {
-      AppActions.resetAndEnd();
+      this.dispatch(resetAndEnd());
     }
-
-    ConsoleActions.setPlayers(players);
+    this.dispatch(setPlayers(players));
   }
 
   handleQuestionAskState(data) {
     const { about, question, submitted_answers } = data;
-    AppActions.updateQuestionInfo(question, about, submitted_answers);
+    this.dispatch(updateQuestionInfo(question, about, submitted_answers));
   }
 
   handleQuestionGuessState(data) {
     const { answers, submitted_guesses } = data;
-    AppActions.updateGuessesInfo(answers, submitted_guesses);
+    this.dispatch(updateGuessesInfo(answers, submitted_guesses));
   }
 
   handleShowResultsState(data) {
-    const { answers } = data;
-    console.log(answers);
-    ConsoleActions.addGuessResults(answers);
+    this.dispatch(addGuessResults(data.answers));
   }
 
   handleShowPointsState(data) {
-    const { points } = data;
-    ConsoleActions.addPoints(points);
+    this.dispatch(addPoints(data.points));
   }
 }

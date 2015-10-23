@@ -7,7 +7,7 @@ export default class QuestionComponent extends Component {
     aboutMe: PropTypes.bool,
     playerName: PropTypes.string,
     answerSubmitted: PropTypes.bool,
-    submitAnswer: PropTypes.func
+    actions: PropTypes.object
   }
 
   constructor(props) {
@@ -64,9 +64,9 @@ export default class QuestionComponent extends Component {
 
   submitAnswer() {
     const { answer } = this.state;
-    const { submitAnswer } = this.props;
+    const { actions } = this.props;
 
     this.setState({ answer: '' });
-    submitAnswer(answer);
+    actions.submitAnswer(answer);
   }
 }

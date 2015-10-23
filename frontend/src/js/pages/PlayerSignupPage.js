@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import PlayerActions from '../actions/PlayerActions';
+import { setPlayerName } from '../actions/playerActions';
 
 export default class PlayerSignupPage extends Component {
 
@@ -7,13 +7,13 @@ export default class PlayerSignupPage extends Component {
     // ReactRouter Props
     history: PropTypes.object,
 
+    // app props
+    dispatch: PropTypes.func,
+
     // player props
     player: PropTypes.shape({
       playerName: PropTypes.string
     }),
-
-    // actions props
-    setPlayerName: PropTypes.func
   }
 
   constructor(props) {
@@ -65,9 +65,9 @@ export default class PlayerSignupPage extends Component {
 
   submitPlayerName() {
     const { newPlayerName } = this.state;
-    const { setPlayerName } = this.props;
+    const { dispatch } = this.props;
 
     this.setState({ newPlayerName: '' });
-    setPlayerName(newPlayerName);
+    dispatch(setPlayerName(newPlayerName));
   }
 }

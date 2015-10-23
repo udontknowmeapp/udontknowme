@@ -3,14 +3,18 @@ import { reduxReactRouter } from 'redux-router';
 import createHistory from 'history/lib/createBrowserHistory';
 import routes from '../routes/routes';
 import thunk from 'redux-thunk';
+import multi from 'redux-multi';
 import api from '../middleware/api';
+import createLogger from 'redux-logger';
 import rootReducer from '../reducers';
 
 const finalStore = compose(
-  applyMiddleware(thunk, api),
-  reduxReactRouter({ routes, createHistory })
+  applyMiddleware(thunk, multi, api),
+  reduxReactRouter({ routes, createHistory }),
+  applyMiddleware(createLogger())
 )(createStore);
 
 export default function configureStore(initialState) {
-  return finalStore(rootReducer, initialState);
+  const store = finalStore(rootReducer, initialState);
+  return store;
 }

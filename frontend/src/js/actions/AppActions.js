@@ -1,22 +1,26 @@
 import messages from '../constants/messagesConstants';
-import playerTypes from '../constants/playerTypeConstants';
-import { types as types } from '../constants/actionConstants';
+import { rootActionTypes as types } from '../constants/actionConstants';
 import * as PlayerActions from './playerActions';
 import * as ConsoleActions from './consoleActions';
 
-export function connection() {
+export function connection(dispatch) {
   return {
     type: types.CONNECTION,
-    conn: true
+    conn: {},
+    dispatch
   };
 }
 
 export function sendMessage(player_type, player_name, message) {
-  return {
-    type: types.SEND_MESSAGE,
-    player_type,
-    player_name,
-    message
+  return (dispatch, getState) => {
+    const { app } = getState();
+    return dispatch({
+      type: types.SEND_MESSAGE,
+      conn: app.conn,
+      player_type,
+      player_name,
+      message
+    });
   };
 }
 
@@ -49,25 +53,19 @@ export function setCurrentAnswers(answers) {
 }
 
 export function updateQuestionInfo(question, about, answers) {
-  const { app } = getState();
-  if (app.playerType === playerTypes.CONSOLE) {
-    ConsoleActions.setQuestionInfo(about, answers);
-  } else if (app.playerType === playerTypes.PLAYER) {
-    PlayerActions.setQuestionInfo(about, answers);
-  }
-
-  return dispatch(setCurrentQuestion(question));
+  return [
+    ConsoleActions.setQuestionInfo(about, answers),
+    PlayerActions.setQuestionInfo(about, answers),
+    setCurrentQuestion(question)
+  ];
 }
 
 export function updateGuessesInfo(answers, guesses) {
-  const { app } = getState();
-  if (app.playerType === playerTypes.CONSOLE) {
-    ConsoleActions.setGuesses(guesses);
-  } else if (app.playerType === playerTypes.PLAYER) {
-    PlayerActions.isGuessSubmitted(guesses);
-  }
-
-  return dispatch(setCurrentAnswers(answers));
+  return [
+    ConsoleActions.setGuesses(guesses),
+    PlayerActions.isGuessSubmitted(guesses),
+    setCurrentAnswers(answers)
+  ];
 }
 
 export function resetAndEnd() {
@@ -75,10 +73,12 @@ export function resetAndEnd() {
 }
 
 export function startNewGame() {
-  const { app, player } = getState();
-  sendMessage(
-    app.playerType,
-    player.playerName.length ? player.playerName : null,
-    messages.NEW_GAME
-  );
+  return (dispatch, getState) => {
+    const { app, player } = getState();
+    return dispatch(sendMessage(
+      app.playerType,
+      player.playerName.length ? player.playerName : null,
+      messages.NEW_GAME
+    ));
+  };
 }

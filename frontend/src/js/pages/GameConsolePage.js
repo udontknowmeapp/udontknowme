@@ -1,15 +1,23 @@
 import React, { Component, PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
 import states from '../constants/stateConstants';
-import ConsoleActions from '../actions/ConsoleActions';
 import GameLobby from '../components/game-console/GameLobby';
 import QuestionComponent from '../components/game-console/QuestionComponent';
 import GuessesComponent from '../components/game-console/GuessesComponent';
 import ResultsComponent from '../components/game-console/ResultsComponent';
+import {
+  resetTimer,
+  startTimer,
+  identify,
+  introCompleted,
+  getNextResults
+} from '../actions/consoleActions';
 
 export default class GameConsolePage extends Component {
 
   static propTypes = {
     // app props
+    dispatch: PropTypes.func,
     app: PropTypes.shape({
       appState: PropTypes.string,
       question: PropTypes.string,
@@ -25,21 +33,14 @@ export default class GameConsolePage extends Component {
       guessResults: PropTypes.array,
       points: PropTypes.array,
       timer: PropTypes.number
-    }),
-
-    // consoleActions props
-    resetTimer: PropTypes.func,
-    startTimer: PropTypes.func,
-    identify: PropTypes.func,
-    introCompleted: PropTypes.func,
-    getNextResults: PropTypes.func
+    })
   }
 
   constructor(props) {
     super(props);
 
-    const { identify } = this.props;
-    identify();
+    const { dispatch } = this.props;
+    dispatch(identify());
   }
 
   render() {
@@ -65,7 +66,8 @@ export default class GameConsolePage extends Component {
   }
 
   renderLobby() {
-    const { app, gameConsole, introCompleted } = this.props;
+    const { app, gameConsole, dispatch } = this.props;
+    const actions = bindActionCreators({ introCompleted }, dispatch);
 
     return (
       <div className='game-console-page'>
@@ -73,7 +75,7 @@ export default class GameConsolePage extends Component {
           <GameLobby
             appState={app.appState}
             players={gameConsole.players}
-            introCompleted={introCompleted}
+            actions={actions}
           />
         </div>
       </div>
@@ -81,7 +83,8 @@ export default class GameConsolePage extends Component {
   }
 
   renderQuestionAsk() {
-    const { app, gameConsole, resetTimer, startTimer } = this.props;
+    const { app, gameConsole, dispatch } = this.props;
+    const actions = bindActionCreators({ resetTimer, startTimer }, dispatch);
 
     return (
       <div className='game-console-page'>
@@ -91,8 +94,7 @@ export default class GameConsolePage extends Component {
             timer={gameConsole.timer}
             about={gameConsole.questionAbout}
             submittedAnswers={gameConsole.submittedAnswers}
-            resetTimer={resetTimer}
-            startTimer={startTimer}
+            actions={actions}
           />
         </div>
       </div>
@@ -100,7 +102,8 @@ export default class GameConsolePage extends Component {
   }
 
   renderQuestionGuess() {
-    const { app, gameConsole, resetTimer, startTimer } = this.props;
+    const { app, gameConsole, dispatch } = this.props;
+    const actions = bindActionCreators({ resetTimer, startTimer }, dispatch);
 
     return (
       <div className='game-console-page'>
@@ -110,8 +113,7 @@ export default class GameConsolePage extends Component {
             answers={app.answers}
             submittedGuesses={gameConsole.submittedGuesses}
             timer={gameConsole.timer}
-            resetTimer={resetTimer}
-            startTimer={startTimer}
+            action={actions}
           />
         </div>
       </div>
@@ -119,7 +121,8 @@ export default class GameConsolePage extends Component {
   }
 
   renderResults() {
-    const { app, gameConsole, resetTimer, getNextResults } = this.props;
+    const { app, gameConsole, dispatch } = this.props;
+    const actions = bindActionCreators({ resetTimer, getNextResults }, dispatch);
 
     return (
       <div className='game-console-page'>
@@ -129,8 +132,7 @@ export default class GameConsolePage extends Component {
             question={app.question}
             guessResults={gameConsole.guessResults}
             points={gameConsole.points}
-            resetTimer={resetTimer}
-            getNextResults={getNextResults}
+            actions={actions}
           />
         </div>
       </div>

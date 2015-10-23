@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import TimerWrapper from '../../wrappers/TimerWrapper';
+// import TimerWrapper from '../../wrappers/TimerWrapper';
 
-class QuestionComponent extends Component {
+export default class QuestionComponent extends Component {
 
   static propTypes = {
     timer: PropTypes.number,
@@ -30,4 +30,4 @@ class QuestionComponent extends Component {
   }
 }
 
-export default TimerWrapper(QuestionComponent);
+// export default TimerWrapper(QuestionComponent);
