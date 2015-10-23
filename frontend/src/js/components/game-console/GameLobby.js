@@ -1,19 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 import states from '../../constants/stateConstants';
-import ConsoleActions from '../../actions/ConsoleActions';
 
 export default class GameLobby extends Component {
 
   static propTypes = {
     appState: PropTypes.string,
-    conn: PropTypes.object,
-    players: PropTypes.array
+    players: PropTypes.array,
+    introCompleted: PropTypes.func
   }
 
   componentDidUpdate(prevProps) {
-    const { appState, conn } = this.props;
+    const { appState, introCompleted } = this.props;
     if (appState === states.INTRO && prevProps.appState === states.LOBBY) {
-      setTimeout(() => ConsoleActions.introCompleted(conn), 3000);
+      setTimeout(() => introCompleted(), 3000);
     }
   }
 

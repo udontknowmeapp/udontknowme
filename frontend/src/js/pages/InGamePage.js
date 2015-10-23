@@ -10,20 +10,30 @@ export default class InGamePage extends Component {
     // ReactRouter props
     history: PropTypes.object,
 
-    // AppStore props
-    conn: PropTypes.object,
-    appState: PropTypes.string,
-    question: PropTypes.string,
-    answers: PropTypes.array,
+    // app props
+    app: PropTypes.shape({
+      appState: PropTypes.string,
+      question: PropTypes.string,
+      answers: PropTypes.array,
+    }),
 
-    // PlayerStore props
-    playerName: PropTypes.string,
-    aboutMe: PropTypes.bool,
-    answerSubmitted: PropTypes.bool,
-    guessSubmitted: PropTypes.bool,
+    // player props
+    player: PropTypes.shape({
+      playerName: PropTypes.string,
+      aboutMe: PropTypes.bool,
+      answerSubmitted: PropTypes.bool,
+      guessSubmitted: PropTypes.bool,
+    }),
 
-    // GameConsoleStore props
-    players: PropTypes.array
+    // gameConsole props
+    gameConsole: PropTypes.shape({
+      players: PropTypes.array
+    }),
+
+    // playerActions props
+    startGame: PropTypes.func,
+    submitAnswer: PropTypes.func,
+    submitGuess: PropTypes.func
   }
 
   constructor(props) {
@@ -36,12 +46,10 @@ export default class InGamePage extends Component {
   }
 
   render() {
-    const { appState } = this.props;
+    const { app } = this.props;
 
-    switch(appState) {
+    switch(app.appState) {
       case states.INIT:
-        return this.renderLobby();
-        break;
       case states.LOBBY:
         return this.renderLobby();
         break;
@@ -55,8 +63,6 @@ export default class InGamePage extends Component {
         return this.renderQuestionGuess();
         break;
       case states.SHOW_RESULTS:
-        return this.renderResults();
-        break;
       case states.SHOW_POINTS:
         return this.renderResults();
         break;
@@ -64,14 +70,14 @@ export default class InGamePage extends Component {
   }
 
   renderLobby() {
-    const { conn, playerName, players } = this.props;
+    const { player, gameConsole, startGame } = this.props;
 
     return (
       <span>
         <LobbyComponent
-          conn={conn}
-          playerName={playerName}
-          players={players}
+          playerName={player.playerName}
+          players={gameConsole.players}
+          startGame={startGame}
         />
       </span>
     );
@@ -86,44 +92,32 @@ export default class InGamePage extends Component {
   }
 
   renderQuestionAsk() {
-    const {
-      question,
-      aboutMe,
-      playerName,
-      answerSubmitted,
-      conn
-    } = this.props;
+    const { app, player, submitAnswer } = this.props;
 
     return (
       <span>
         <QuestionComponent
-          question={question}
-          aboutMe={aboutMe}
-          playerName={playerName}
-          answerSubmitted={answerSubmitted}
-          conn={conn}
+          question={app.question}
+          aboutMe={player.aboutMe}
+          playerName={player.playerName}
+          answerSubmitted={player.answerSubmitted}
+          submitAnswer={submitAnswer}
         />
       </span>
     );
   }
 
   renderQuestionGuess() {
-    const {
-      answers,
-      aboutMe,
-      guessSubmitted,
-      playerName,
-      conn
-    } = this.props;
+    const { app, player, submitGuess } = this.props;
 
     return (
       <span>
         <GuessingComponent
-          answers={answers}
-          aboutMe={aboutMe}
-          guessSubmitted={guessSubmitted}
-          playerName={playerName}
-          conn={conn}
+          answers={app.answers}
+          aboutMe={player.aboutMe}
+          guessSubmitted={player.guessSubmitted}
+          playerName={player.playerName}
+          submitGuess={submitGuess}
         />
       </span>
     );
@@ -138,8 +132,8 @@ export default class InGamePage extends Component {
   }
 
   transitionIfNotPlayer() {
-    const { playerName, history } = this.props;
-    if (!playerName) {
+    const { player, history } = this.props;
+    if (!player.playerName) {
       history.pushState(null, '/');
     }
   }

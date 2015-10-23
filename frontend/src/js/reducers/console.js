@@ -15,8 +15,6 @@ const initialState = {
   timerInterval: null
 };
 
-// TODO - Timer interval set in actions b/c calls other
-
 export default function root(state = initialState, action) {
   switch(action.type) {
     case types.SET_PLAYERS:

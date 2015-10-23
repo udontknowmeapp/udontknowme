@@ -1,56 +1,49 @@
 import React, { Component, PropTypes } from 'react';
 import merge from 'lodash/object/merge';
-import connectToStores from 'alt/utils/connectToStores';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import renderRouteChildren from './utils/renderRouteChildren';
-import AppStore from './stores/AppStore';
-import GameConsoleStore from './stores/GameConsoleStore';
-import PlayerStore from './stores/PlayerStore';
-import AppActions from './actions/AppActions';
+import * as AppActions from './actions/appActions';
+import * as ConsoleActions from './actions/consoleActions';
+import * as PlayerActions from './actions/playerActions';
 
-@connectToStores
-export default class App extends Component {
+class App extends Component {
 
   static propTypes = {
-    // AppStore props
-    conn: PropTypes.object.isRequired,
-    appState: PropTypes.object.isRequired,
-    playerType: PropTypes.string.isRequired,
-    question: PropTypes.string.isRequired,
-    answers: PropTypes.array.isRequired,
+    // app props
+    app: PropTypes.shape({
+      conn: PropTypes.bool.isRequired,
+      appState: PropTypes.state.isRequired,
+      playerType: PropTypes.string.isRequired,
+      question: PropTypes.string.isRequired,
+      answers: PropTypes.array.isRequired
+    }).isRequired,
 
-    // PlayerStore props
-    playerName: PropTypes.string.isRequired,
-    answerSubmtted: PropTypes.bool.isRequired,
-    guessSubmitted: PropTypes.bool.isRequired,
-    aboutMe: PropTypes.bool.isRequired,
+    // player props
+    player: PropTypes.shape({
+      playerName: PropTypes.string.isRequired,
+      answerSubmtted: PropTypes.bool.isRequired,
+      guessSubmitted: PropTypes.bool.isRequired,
+      aboutMe: PropTypes.bool.isRequired
+    }).isRequired,
 
-    // GameConsoleStore Props
-    players: PropTypes.array.isRequired,
-    questionAbout: PropTypes.string.isRequired,
-    submittedAnswers: PropTypes.array.isRequired,
-    submittedGuesses: PropTypes.array.isRequired,
-    guessResults: PropTypes.array.isRequired,
-    points: PropTypes.array.isRequired,
-    timer: PropTypes.number.isRequired
-  }
-
-  static getStores() {
-    return [AppStore, GameConsoleStore, PlayerStore];
-  }
-
-  static getPropsFromStores() {
-    return merge(
-      AppStore.getState(),
-      PlayerStore.getState(),
-      GameConsoleStore.getState()
-    );
+    // gameConsole props
+    gameConsole: PropTypes.shape({
+      players: PropTypes.array.isRequired,
+      questionAbout: PropTypes.string.isRequired,
+      submittedAnswers: PropTypes.array.isRequired,
+      submittedGuesses: PropTypes.array.isRequired,
+      guessResults: PropTypes.array.isRequired,
+      points: PropTypes.array.isRequired,
+      timer: PropTypes.number.isRequired
+    });
   }
 
   constructor(props) {
     super(props);
 
-    const sessionInfo = AppStore.checkCachedSession();
-    AppActions.connection(sessionInfo);
+    const { connection } = this.props;
+    connection();
   }
 
   render() {
@@ -61,3 +54,23 @@ export default class App extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  const { app, player, gameConsole, router } = state;
+  return {
+    app,
+    player,
+    gameConsole,
+    router
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(merge(
+    AppActions,
+    ConsoleActions,
+    PlayerActions
+  ), dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

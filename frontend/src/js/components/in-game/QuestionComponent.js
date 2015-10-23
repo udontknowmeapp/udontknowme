@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import PlayerActions from '../../actions/PlayerActions';
 
 export default class QuestionComponent extends Component {
 
@@ -8,7 +7,7 @@ export default class QuestionComponent extends Component {
     aboutMe: PropTypes.bool,
     playerName: PropTypes.string,
     answerSubmitted: PropTypes.bool,
-    conn: PropTypes.object
+    submitAnswer: PropTypes.func
   }
 
   constructor(props) {
@@ -65,9 +64,9 @@ export default class QuestionComponent extends Component {
 
   submitAnswer() {
     const { answer } = this.state;
-    const { playerName, conn } = this.props;
+    const { submitAnswer } = this.props;
 
     this.setState({ answer: '' });
-    PlayerActions.submitAnswer(playerName, answer, conn);
+    submitAnswer(answer);
   }
 }

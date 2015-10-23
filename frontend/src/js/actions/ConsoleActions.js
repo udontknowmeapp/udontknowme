@@ -1,5 +1,6 @@
 import messages from '../constants/messagesConstants';
 import playerTypes from '../constants/playerTypeConstants';
+import states from '../../constants/stateConstants';
 import { consoleActionTypes as types } from '../constants/actionConstants';
 import { sendMessage, setPlayerType } from './appActions';
 
@@ -56,6 +57,10 @@ export function resetTimer() {
   return { type: types.RESET_TIMER };
 }
 
+export function startTimer() {
+  sendMessage(playerTypes.CONSOLE, null, messages.START_TIMER);
+}
+
 export function identify() {
   sendMessage(playerTypes.CONSOLE, null, messages.IDENTIFY);
   return dispatch(setPlayerType(playerTypes.CONSOLE));
@@ -63,4 +68,13 @@ export function identify() {
 
 export function introCompleted() {
   sendMessage(playerTypes.CONSOLE, null, messages.INTRO_COMPLETE);
+}
+
+export function getNextResults() {
+  const { app } = getState();
+  sendMessage(
+    playerTypes.CONSOLE,
+    null,
+    app.appState === states.SHOW_RESULTS ? messages.RESULTS_COMPLETE : messages.POINTS_COMPLETE
+  );
 }

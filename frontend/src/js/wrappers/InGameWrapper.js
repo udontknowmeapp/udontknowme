@@ -5,29 +5,20 @@ import messages from '../constants/messagesConstants';
 export default class InGameWrapper extends Component {
 
   static propTypes = {
-    conn: PropTypes.object,
-    playerType: PropTypes.string,
-    playerName: PropTypes.string
+    startNewGame: PropTypes.func,
   }
 
   render() {
+    const { startNewGame } = this.props;
+
     return (
       <span>
         <button
           className='player-signup-content__button'
-          onClick={this.startNewGame.bind(this)}
+          onClick={startNewGame}
         >New Game</button>
         {renderRouteChildren(this.props)}
       </span>
-    );
-  }
-
-  startNewGame() {
-    const { conn, playerType, playerName } = this.props;
-    conn.send(
-      playerType,
-      playerName.length ? playerName : null,
-      messages.NEW_GAME
     );
   }
 }

@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import ConsoleActions from '../actions/ConsoleActions';
 import messages from '../constants/messagesConstants';
 import playerTypes from '../constants/playerTypeConstants';
 
@@ -7,16 +6,16 @@ export default function TimerWrapper(WrappedComponent) {
   return class WrappedComponent extends Component {
 
     static propTypes = {
-      conn: PropTypes.object
+      resetTimer: PropTypes.func,
+      startTimer: PropTypes.func
     }
 
     constructor(props) {
       super(props);
 
-      ConsoleActions.resetTimer();
-
-      const { conn } = this.props;
-      conn.send(playerTypes.CONSOLE, null, messages.START_TIMER);
+      const { resetTimer, startTimer };
+      resetTimer();
+      startTimer();
     }
 
     render() {

@@ -4,7 +4,6 @@ import TimerWrapper from '../../wrappers/TimerWrapper';
 class GuessesComponent extends Component {
 
   static propTypes = {
-    conn: PropTypes.object,
     timer: PropTypes.timer,
     question: PropTypes.string,
     answers: PropTypes.array,

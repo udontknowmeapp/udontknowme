@@ -73,3 +73,12 @@ export function updateGuessesInfo(answers, guesses) {
 export function resetAndEnd() {
   return { type: types.RESET_AND_END };
 }
+
+export function startNewGame() {
+  const { app, player } = getState();
+  sendMessage(
+    app.playerType,
+    player.playerName.length ? player.playerName : null,
+    messages.NEW_GAME
+  );
+}

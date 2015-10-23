@@ -4,7 +4,6 @@ import TimerWrapper from '../../wrappers/TimerWrapper';
 class QuestionComponent extends Component {
 
   static propTypes = {
-    conn: PropTypes.object,
     timer: PropTypes.number,
     question: PropTypes.string,
     about: PropTypes.string,
