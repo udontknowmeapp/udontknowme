@@ -18,10 +18,10 @@ const initialState = {
 export default function root(state = initialState, action) {
   switch(action.type) {
     case types.SET_PLAYERS:
-      return Object.assign({}, state, { players: action.players });
+      return merge({}, state, { players: action.players });
 
     case types.SET_QUESTION_INFO:
-      return Object.assign({}, state, {
+      return merge({}, state, {
         submittedGuesses: [],
         guessResults: [],
         points: [],
