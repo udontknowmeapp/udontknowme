@@ -21,13 +21,21 @@ export default function root(state = initialState, action) {
       return merge({}, state, { players: action.players });
 
     case types.SET_QUESTION_INFO:
-      return merge({}, state, {
-        submittedGuesses: [],
-        guessResults: [],
-        points: [],
-        submittedAnswers: action.answers,
-        questionAbout: action.about
-      });
+      const { about, answers } = action;
+
+      // On new question, reset console info before adding new info
+      if (state.questionAbout === about) {
+        return merge({}, initialState, {
+          players: state.players,
+          submittedAnswers: answers,
+          questionAbout: about,
+        });
+      } else {
+        return merge({}, state, {
+          submittedAnswers: answers,
+          questionAbout: about
+        });
+      }
 
     case types.SET_GUESSES:
       return merge({}, state, {

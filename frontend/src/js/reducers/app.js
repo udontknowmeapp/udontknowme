@@ -1,4 +1,5 @@
 import merge from 'lodash/object/merge';
+import omit from 'lodash/object/omit';
 import states from '../constants/stateConstants';
 import { rootActionTypes as types } from '../constants/actionConstants';
 
@@ -25,7 +26,7 @@ export default function app(state = initialState, action) {
       return merge({}, state, { question: action.question });
 
     case types.SET_CURRENT_ANSWERS:
-      return merge({}, state, { answers: action.answers });
+      return merge({}, omit(state, 'answers'), { answers: action.answers });
 
     case types.RESET_AND_END:
       return merge({}, state, {
