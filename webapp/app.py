@@ -18,7 +18,7 @@ class UDKMWebSocket(tornado.websocket.WebSocketHandler):
         CONNECTED_CLIENTS.append(self)
 
     def on_message(self, message):
-        print("Message from: {}".format(self))
+        print("Message from: {}. Message: {}".format(self, message))
         message_dict = json.loads(message)
         response = UDONTKNOWME.read_message(message_dict)
         print("Game State: {}".format(UDONTKNOWME.current_state))
@@ -30,6 +30,17 @@ class UDKMWebSocket(tornado.websocket.WebSocketHandler):
         CONNECTED_CLIENTS.remove(self)
 
 
+def check_if_timer_is_over():
+    if UDONTKNOWME.timer_over is True:
+        message = {
+            'player_type': 'system',
+            'message': 'timer_over',
+        }
+        response = UDONTKNOWME.read_message(message)
+        for client in CONNECTED_CLIENTS:
+            client.write_message(response)
+
+
 class UDKMAppHandler(tornado.web.RequestHandler):
     def get(self):
         self.render('index.html')
@@ -38,7 +49,7 @@ class UDKMAppHandler(tornado.web.RequestHandler):
 urls = [
     (r"/play", UDKMWebSocket),
     (r"/assets/(.*)", tornado.web.StaticFileHandler, {'path': settings.WEB_STATIC_PATH}),
-    (r"/.*", UDKMAppHandler),
+    (r"/.*", UDKMAppHandler),  # TODO there has to be a better way...
 ]
 
 application = tornado.web.Application(
@@ -50,4 +61,9 @@ application = tornado.web.Application(
 
 if __name__ == "__main__":
     application.listen(settings.PORT)
+    timer_callback = tornado.ioloop.PeriodicCallback(
+        check_if_timer_is_over,  # callback
+        1000, # call every milliseconds
+    )
+    timer_callback.start()
     tornado.ioloop.IOLoop.current().start()

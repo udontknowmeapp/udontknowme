@@ -1,3 +1,5 @@
+import datetime
+
 from game import Game
 
 
@@ -6,10 +8,29 @@ class GameStateMachine(object):
     The state machine that takes incomming messages and moves the state properly.
     """
 
+    TIMER_LENGTH = 10  # seconds
+
     def __init__(self):
         self.game = Game()
         self.states = self.states()
         self.current_state = 'lobby'
+        self.timer = None
+
+    def timer_over(self):
+        """
+            Return None if there is no timer set
+            Return True if the timer that was set previously is over
+            Return False if the timer that was set previously is not over
+        """
+        if self.timer:
+            if (datetime.datetime.utcnow() - datetime.timedelta(seconds=self.TIMER_LENGTH)).seconds > self.timer:
+                self.timer = None
+                print "Timer Over"
+                return True
+            else:
+                return False
+        else:
+            return None
 
     def states(self):
         return {
@@ -115,7 +136,15 @@ class GameStateMachine(object):
 
     def state_question_ask(self, **kwargs):
         question = self.game.current_question
-        if kwargs and kwargs['player_type'] == 'player':  # at this point we're just waiting on players
+        if kwargs and kwargs['player_type'] == 'console':  # start the timer
+            if kwargs['message'] == 'start_timer':
+                if self.timer is None:  # there is no timer currently, start the timer
+                    self.timer = datetime.datetime.utcnow()
+        if kwargs and kwargs['player_type'] == 'system':  # the system is telling us the timer is up
+            if kwargs['message'] == 'timer_over':
+                # TODO what to do here?!
+                print "IT WORKED!!!!!"
+        if kwargs and kwargs['player_type'] == 'player' and self.timer_over() is False:  # at this point we're just waiting on players
             player = self.game.get_player_by_name(kwargs['player_name'])
             question.add_answer(player, kwargs['message'])
             if len(question.answers) == len(self.game.players):
@@ -130,6 +159,10 @@ class GameStateMachine(object):
 
     def state_question_guess(self, **kwargs):
         question = self.game.current_question
+        if kwargs and kwargs['player_type'] == 'console':  # start the timer
+            if kwargs['message'] == 'start_timer':
+                if self.timer is None:  # there is no timer currently, start the timer
+                    self.timer = datetime.datetime.utcnow()
         if kwargs and kwargs['player_type'] == 'player':  # at this point we're just waiting on players
             player = self.game.get_player_by_name(kwargs['player_name'])
             question.add_guess(player, kwargs['message'])
