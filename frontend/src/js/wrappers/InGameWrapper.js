@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import renderRouteChildren from '../utils/renderRouteChildren';
-import { startNewGame } from '../actions/appActions';
+import { startNewGame } from '../actions/AppActions';
 
 export default class InGameWrapper extends Component {
 

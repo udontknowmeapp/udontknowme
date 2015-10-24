@@ -1,7 +1,7 @@
 import messages from '../constants/messagesConstants';
 import { rootActionTypes as types } from '../constants/actionConstants';
-import * as PlayerActions from './playerActions';
-import * as ConsoleActions from './consoleActions';
+import * as PlayerActions from './PlayerActions';
+import * as ConsoleActions from './ConsoleActions';
 
 export function connection(dispatch) {
   return {

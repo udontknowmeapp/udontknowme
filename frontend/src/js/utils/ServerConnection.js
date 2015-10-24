@@ -6,13 +6,13 @@ import {
   addGuessResults,
   addPoints,
   setComponentTimer
-} from '../actions/consoleActions';
+} from '../actions/ConsoleActions';
 import {
   setAppState,
   resetAndEnd,
   updateQuestionInfo,
   updateGuessesInfo
-} from '../actions/appActions';
+} from '../actions/AppActions';
 
 export default class ServerConnection extends Object {
 

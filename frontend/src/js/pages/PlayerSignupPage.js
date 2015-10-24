@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { setPlayerName } from '../actions/playerActions';
+import { setPlayerName } from '../actions/PlayerActions';
 
 export default class PlayerSignupPage extends Component {
 

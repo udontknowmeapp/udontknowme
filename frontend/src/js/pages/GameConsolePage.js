@@ -11,7 +11,7 @@ import {
   identify,
   introCompleted,
   getNextResults
-} from '../actions/consoleActions';
+} from '../actions/ConsoleActions';
 
 export default class GameConsolePage extends Component {
 

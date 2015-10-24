@@ -8,7 +8,7 @@ import {
   startGame,
   submitAnswer,
   submitGuess
-} from '../actions/playerActions';
+} from '../actions/PlayerActions';
 
 export default class InGamePage extends Component {
 

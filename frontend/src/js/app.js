@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import renderRouteChildren from './utils/renderRouteChildren';
-import { connection } from './actions/appActions';
+import { connection } from './actions/AppActions';
 
 class App extends Component {
 

@@ -1,7 +1,7 @@
 import messages from '../constants/messagesConstants';
 import playerTypes from '../constants/playerTypeConstants';
 import { playerActionTypes as types } from '../constants/actionConstants';
-import { sendMessage, setPlayerType } from './appActions';
+import { sendMessage, setPlayerType } from './AppActions';
 
 export function updatePlayerName(playerName) {
   return {
