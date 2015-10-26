@@ -31,9 +31,10 @@ class UDKMWebSocket(tornado.websocket.WebSocketHandler):
 
 
 def check_if_timer_is_over():
-    if UDONTKNOWME.timer_over is True:
+    if UDONTKNOWME.timer_over() is True:
         message = {
             'player_type': 'system',
+            'player_name': None,
             'message': 'timer_over',
         }
         response = UDONTKNOWME.read_message(message)

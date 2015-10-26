@@ -7,7 +7,16 @@ export default class QuestionComponent extends Component {
     timer: PropTypes.number,
     question: PropTypes.string,
     about: PropTypes.string,
-    submittedAnswers: PropTypes.array
+    submittedAnswers: PropTypes.array,
+    actions: PropTypes.object
+  }
+
+  constructor(props) {
+    super(props);
+
+    const { actions } = this.props;
+    actions.resetTimer();
+    actions.startTimer();
   }
 
   render() {

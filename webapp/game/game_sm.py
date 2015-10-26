@@ -23,7 +23,7 @@ class GameStateMachine(object):
             Return False if the timer that was set previously is not over
         """
         if self.timer:
-            if (datetime.datetime.utcnow() - datetime.timedelta(seconds=self.TIMER_LENGTH)).seconds > self.timer:
+            if (datetime.datetime.utcnow().second - datetime.timedelta(seconds=self.TIMER_LENGTH).seconds) > self.timer.second:
                 self.timer = None
                 print "Timer Over"
                 return True

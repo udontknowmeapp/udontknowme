@@ -13,10 +13,8 @@ export default class ResultsComponent extends Component {
   constructor(props) {
     super(props);
 
-    /*
     const { actions } = this.props;
     actions.resetTimer();
-    */
     this.showNext();
   }
 
