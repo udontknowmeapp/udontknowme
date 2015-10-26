@@ -1,60 +1,84 @@
-import alt from '../alt';
-import ServerConnection from '../utils/ServerConnection';
 import messages from '../constants/messagesConstants';
-import playerTypes from '../constants/playerTypeConstants';
-import PlayerActions from './PlayerActions';
-import ConsoleActions from './ConsoleActions';
+import { rootActionTypes as types } from '../constants/actionConstants';
+import * as PlayerActions from './PlayerActions';
+import * as ConsoleActions from './ConsoleActions';
 
-class AppActions {
-  constructor() {
-    this.generateActions(
-      'setAppState',
-      'setPlayerType',
-      'setCurrentQuestion',
-      'setCurrentAnswers'
-    );
-  }
-
-  connection(session) {
-    const conn = new ServerConnection();
-
-    if (session) {
-      const { player_type, player_name } = session;
-      const { setPlayerType } = this.actions;
-
-      // Update player type in memory
-      setPlayerType(player_type);
-      if (player_type === playerTypes.PLAYER) {
-        PlayerActions.updatePlayerName(player_name);
-      }
-
-      // Send identifying handshake
-      conn.send(player_type, player_name, messages.IDENTIFY);
-    }
-
-    // Store connection in memory
-    this.dispatch(conn);
-  }
-
-  updateQuestionInfo(question, about, answers) {
-    const { setCurrentQuestion } = this.actions;
-    setCurrentQuestion(question);
-    ConsoleActions.setQuestionInfo({ about, answers });
-    PlayerActions.setQuestionInfo({ about, answers });
-  }
-
-  updateGuessesInfo(answers, guesses) {
-    const { setCurrentAnswers } = this.actions;
-    setCurrentAnswers(answers);
-    ConsoleActions.setGuesses(guesses);
-    PlayerActions.isGuessSubmitted(guesses);
-  }
-
-  resetAndEnd() {
-    ConsoleActions.resetAndEnd();
-    PlayerActions.resetAndEnd();
-    this.dispatch(true);
-  }
+export function connection(dispatch) {
+  return {
+    type: types.CONNECTION,
+    conn: {},
+    dispatch
+  };
 }
 
-export default alt.createActions(AppActions);
+export function sendMessage(player_type, player_name, message) {
+  return (dispatch, getState) => {
+    const { app } = getState();
+    return dispatch({
+      type: types.SEND_MESSAGE,
+      conn: app.conn,
+      player_type,
+      player_name,
+      message
+    });
+  };
+}
+
+export function setAppState(appState) {
+  return {
+    type: types.SET_APP_STATE,
+    appState
+  };
+}
+
+export function setPlayerType(playerType) {
+  return {
+    type: types.SET_PLAYER_TYPE,
+    playerType
+  };
+}
+
+export function setCurrentQuestion(question) {
+  return {
+    type: types.SET_CURRENT_QUESTION,
+    question
+  };
+}
+
+export function setCurrentAnswers(answers) {
+  return {
+    type: types.SET_CURRENT_ANSWERS,
+    answers
+  };
+}
+
+export function updateQuestionInfo(question, about, answers) {
+  return [
+    ConsoleActions.setQuestionInfo(about, answers),
+    PlayerActions.setQuestionInfo(about, answers),
+    setCurrentQuestion(question)
+  ];
+}
+
+export function updateGuessesInfo(answers, guesses) {
+  return [
+    ConsoleActions.setGuesses(guesses),
+    PlayerActions.isGuessSubmitted(guesses),
+    setCurrentAnswers(answers)
+  ];
+}
+
+export function resetAndEnd() {
+  return { type: types.RESET_AND_END };
+}
+
+export function startNewGame() {
+  return (dispatch, getState) => {
+    const { app, player } = getState();
+    return dispatch(sendMessage(
+      app.playerType,
+      player.playerName.length ? player.playerName : null,
+      messages.NEW_GAME
+    ));
+  };
+}

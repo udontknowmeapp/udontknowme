@@ -1,59 +1,81 @@
 import React, { Component, PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
 import states from '../constants/stateConstants';
-import ConsoleActions from '../actions/ConsoleActions';
 import GameLobby from '../components/game-console/GameLobby';
 import QuestionComponent from '../components/game-console/QuestionComponent';
 import GuessesComponent from '../components/game-console/GuessesComponent';
 import ResultsComponent from '../components/game-console/ResultsComponent';
+import {
+  resetTimer,
+  startTimer,
+  identify,
+  introCompleted,
+  getNextResults
+} from '../actions/ConsoleActions';
 
 export default class GameConsolePage extends Component {
 
   static propTypes = {
-    // AppStore props
-    conn: PropTypes.object,
-    appState: PropTypes.string,
-    question: PropTypes.string,
-    answers: PropTypes.array,
+    // app props
+    dispatch: PropTypes.func,
+    app: PropTypes.shape({
+      appState: PropTypes.string,
+      question: PropTypes.string,
+      answers: PropTypes.array
+    }),
 
-    // GameConsoleStore props
-    players: PropTypes.array,
-    questionAbout: PropTypes.string,
-    submittedAnswers: PropTypes.array,
-    submittedGuesses: PropTypes.array,
-    guessResults: PropTypes.array,
-    points: PropTypes.array
+    // gameConsole props
+    gameConsole: PropTypes.shape({
+      players: PropTypes.array,
+      questionAbout: PropTypes.string,
+      submittedAnswers: PropTypes.array,
+      submittedGuesses: PropTypes.array,
+      guessResults: PropTypes.array,
+      points: PropTypes.array,
+      timer: PropTypes.number
+    })
   }
 
   constructor(props) {
     super(props);
 
-    const { conn } = this.props;
-    ConsoleActions.identify(conn);
+    const { dispatch } = this.props;
+    dispatch(identify());
   }
 
   render() {
-    const { appState } = this.props;
+    const { app } = this.props;
 
-    if (appState === states.INIT || appState === states.LOBBY || appState === states.INTRO) {
-      return this.renderLobby();
-    } else if (appState === states.QUESTION_ASK) {
-      return this.renderQuestionAsk();
-    } else if (appState === states.QUESTION_GUESS) {
-      return this.renderQuestionGuess();
-    } else if (appState === states.SHOW_RESULTS || appState === states.SHOW_POINTS) {
-      return this.renderResults();
+    switch(app.appState) {
+      case states.INIT:
+      case states.LOBBY:
+      case states.INTRO:
+        return this.renderLobby();
+        break;
+      case states.QUESTION_ASK:
+        return this.renderQuestionAsk();
+        break;
+      case states.QUESTION_GUESS:
+        return this.renderQuestionGuess();
+        break;
+      case states.SHOW_RESULTS:
+      case states.SHOW_POINTS:
+        return this.renderResults();
+        break;
     }
   }
 
   renderLobby() {
-    const { players, appState, conn } = this.props;
+    const { app, gameConsole, dispatch } = this.props;
+    const actions = bindActionCreators({ introCompleted }, dispatch);
+
     return (
       <div className='game-console-page'>
         <div className='game-console-page-content'>
           <GameLobby
-            conn={conn}
-            appState={appState}
-            players={players}
+            appState={app.appState}
+            players={gameConsole.players}
+            actions={actions}
           />
         </div>
       </div>
@@ -61,23 +83,18 @@ export default class GameConsolePage extends Component {
   }
 
   renderQuestionAsk() {
-    const {
-      conn,
-      timer,
-      question,
-      questionAbout,
-      submittedAnswers
-    } = this.props;
+    const { app, gameConsole, dispatch } = this.props;
+    const actions = bindActionCreators({ resetTimer, startTimer }, dispatch);
 
     return (
       <div className='game-console-page'>
         <div className='game-console-page-content'>
           <QuestionComponent
-            conn={conn}
-            timer={timer}
-            question={question}
-            about={questionAbout}
-            submittedAnswers={submittedAnswers}
+            question={app.question}
+            timer={gameConsole.timer}
+            about={gameConsole.questionAbout}
+            submittedAnswers={gameConsole.submittedAnswers}
+            actions={actions}
           />
         </div>
       </div>
@@ -85,23 +102,18 @@ export default class GameConsolePage extends Component {
   }
 
   renderQuestionGuess() {
-    const {
-      conn,
-      timer,
-      question,
-      answers,
-      submittedGuesses
-    } = this.props;
+    const { app, gameConsole, dispatch } = this.props;
+    const actions = bindActionCreators({ resetTimer, startTimer }, dispatch);
 
     return (
       <div className='game-console-page'>
         <div className='game-console-page-content'>
           <GuessesComponent
-            conn={conn}
-            timer={timer}
-            question={question}
-            answers={answers}
-            submittedGuesses={submittedGuesses}
+            question={app.question}
+            answers={app.answers}
+            submittedGuesses={gameConsole.submittedGuesses}
+            timer={gameConsole.timer}
+            action={actions}
           />
         </div>
       </div>
@@ -109,25 +121,18 @@ export default class GameConsolePage extends Component {
   }
 
   renderResults() {
-    const {
-      question,
-      guessResults,
-      points,
-      conn,
-      questionAbout,
-      appState
-    } = this.props;
+    const { app, gameConsole, dispatch } = this.props;
+    const actions = bindActionCreators({ resetTimer, getNextResults }, dispatch);
 
     return (
       <div className='game-console-page'>
         <div className='game-console-page-content'>
           <ResultsComponent
-            appState={appState}
-            conn={conn}
-            question={question}
-            guessResults={guessResults}
-            points={points}
-            questionAbout={questionAbout}
+            appState={app.appState}
+            question={app.question}
+            guessResults={gameConsole.guessResults}
+            points={gameConsole.points}
+            actions={actions}
           />
         </div>
       </div>

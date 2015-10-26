@@ -1,16 +1,15 @@
 import React, { Component, PropTypes } from 'react';
-import PlayerActions from '../../actions/PlayerActions';
 
 export default class LobbyComponent extends Component {
 
   static propTypes = {
-    conn: PropTypes.object,
     playerName: PropTypes.string,
-    players: PropTypes.array
+    players: PropTypes.array,
+    actions: PropTypes.object
   }
 
   render() {
-    const { playerName, players } = this.props;
+    const { playerName, players, actions } = this.props;
 
     return (
       <div className='lobby'>
@@ -24,16 +23,11 @@ export default class LobbyComponent extends Component {
             !players.length ||
               <button
                 className='lobby-button'
-                onClick={this.startGame.bind(this)}
+                onClick={actions.startGame}
               >Start Game</button>
           }
         </div>
       </div>
     );
-  }
-
-  startGame() {
-    const { conn, playerName } = this.props;
-    PlayerActions.startGame(conn, playerName);
   }
 }

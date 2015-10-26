@@ -11,8 +11,6 @@ module.exports = merge(baseConfig, {
   devtool: 'eval',
   debug: true,
   entry: [
-      'webpack-dev-server/client?http://localhost:' + WP_PORT,
-      'webpack/hot/only-dev-server',
       './src/js/index.js'
   ],
   module: {

@@ -1,13 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import renderRouteChildren from '../utils/renderRouteChildren';
-import messages from '../constants/messagesConstants';
+import { startNewGame } from '../actions/AppActions';
 
 export default class InGameWrapper extends Component {
 
   static propTypes = {
-    conn: PropTypes.object,
-    playerType: PropTypes.string,
-    playerName: PropTypes.string
+    dispatch: PropTypes.func
   }
 
   render() {
@@ -15,19 +13,15 @@ export default class InGameWrapper extends Component {
       <span>
         <button
           className='player-signup-content__button'
-          onClick={this.startNewGame.bind(this)}
+          onClick={this.newGame.bind(this)}
         >New Game</button>
         {renderRouteChildren(this.props)}
       </span>
     );
   }
 
-  startNewGame() {
-    const { conn, playerType, playerName } = this.props;
-    conn.send(
-      playerType,
-      playerName.length ? playerName : null,
-      messages.NEW_GAME
-    );
+  newGame() {
+    const { dispatch } = this.props;
+    dispatch(startNewGame());
   }
 }

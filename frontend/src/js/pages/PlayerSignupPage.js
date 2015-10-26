@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import PlayerActions from '../actions/PlayerActions';
+import { setPlayerName } from '../actions/PlayerActions';
 
 export default class PlayerSignupPage extends Component {
 
@@ -7,18 +7,20 @@ export default class PlayerSignupPage extends Component {
     // ReactRouter Props
     history: PropTypes.object,
 
-    // AppStore Props
-    conn: PropTypes.object,
+    // app props
+    dispatch: PropTypes.func,
 
-    // PlayerStore props
-    playerName: PropTypes.string
+    // player props
+    player: PropTypes.shape({
+      playerName: PropTypes.string
+    }),
   }
 
   constructor(props) {
     super(props);
 
-    const { playerName, history } = this.props;
-    if (playerName) {
+    const { player, history } = this.props;
+    if (player.playerName) {
       history.pushState(null, '/in-game');
     }
 
@@ -28,8 +30,8 @@ export default class PlayerSignupPage extends Component {
   }
 
   componentDidUpdate() {
-    const { playerName, history } = this.props;
-    if (playerName) {
+    const { player, history } = this.props;
+    if (player.playerName) {
       history.pushState(null, '/in-game');
     }
   }
@@ -63,8 +65,9 @@ export default class PlayerSignupPage extends Component {
 
   submitPlayerName() {
     const { newPlayerName } = this.state;
-    const { conn } = this.props;
+    const { dispatch } = this.props;
+
     this.setState({ newPlayerName: '' });
-    PlayerActions.setPlayerName(newPlayerName, conn);
+    dispatch(setPlayerName(newPlayerName));
   }
 }

@@ -1,22 +1,22 @@
 import React, { Component, PropTypes } from 'react';
-import AppActions from '../../actions/AppActions';
-import playerTypes from '../../constants/playerTypeConstants';
-import states from '../../constants/stateConstants';
-import messages from '../../constants/messagesConstants';
 
 export default class ResultsComponent extends Component {
 
   static propTypes = {
     appState: PropTypes.string,
-    conn: PropTypes.object,
     question: PropTypes.string,
     guessResults: PropTypes.array,
-    points: PropTypes.array
+    points: PropTypes.array,
+    actions: PropTypes.object
   }
 
   constructor(props) {
     super(props);
-    AppActions.resetTimer();
+
+    /*
+    const { actions } = this.props;
+    actions.resetTimer();
+    */
     this.showNext();
   }
 
@@ -65,12 +65,7 @@ export default class ResultsComponent extends Component {
   }
 
   showNext() {
-    const { appState, conn } = this.props;
-
-    setTimeout(() => conn.send(
-      playerTypes.CONSOLE,
-      null,
-      appState === states.SHOW_RESULTS ? messages.RESULTS_COMPLETE : messages.POINTS_COMPLETE
-    ), 15000);
+    const { actions } = this.props;
+    setTimeout(() => actions.getNextResults(), 10000);
   }
 }

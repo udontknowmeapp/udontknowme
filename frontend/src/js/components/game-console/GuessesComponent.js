@@ -1,10 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import TimerWrapper from '../../wrappers/TimerWrapper';
+// import TimerWrapper from '../../wrappers/TimerWrapper';
 
-class GuessesComponent extends Component {
+export default class GuessesComponent extends Component {
 
   static propTypes = {
-    conn: PropTypes.object,
     timer: PropTypes.timer,
     question: PropTypes.string,
     answers: PropTypes.array,
@@ -40,4 +39,4 @@ class GuessesComponent extends Component {
   }
 }
 
-export default TimerWrapper(GuessesComponent);
+// export default TimerWrapper(GuessesComponent);

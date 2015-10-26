@@ -1,37 +1,61 @@
-import alt from '../alt';
 import messages from '../constants/messagesConstants';
 import playerTypes from '../constants/playerTypeConstants';
-import AppActions from './AppActions';
+import { playerActionTypes as types } from '../constants/actionConstants';
+import { sendMessage, setPlayerType } from './AppActions';
 
-class PlayerActions {
-  constructor() {
-    this.generateActions(
-      'updatePlayerName',
-      'setQuestionInfo',
-      'isGuessSubmitted',
-      'resetAndEnd'
-    );
-  }
-
-  startGame(conn, name) {
-    conn.send(playerTypes.PLAYER, name, messages.START);
-  }
-
-  setPlayerName(name, conn) {
-    const { updatePlayerName } = this.actions;
-
-    conn.send(playerTypes.PLAYER, name, messages.IDENTIFY);
-    AppActions.setPlayerType(playerTypes.PLAYER);
-    updatePlayerName(name);
-  }
-
-  submitAnswer(name, answer, conn) {
-    conn.send(playerTypes.PLAYER, name, answer);
-  }
-
-  submitGuess(name, answerForGuess, conn) {
-    conn.send(playerTypes.PLAYER, name, answerForGuess);
-  }
+export function updatePlayerName(playerName) {
+  return {
+    type: types.UPDATE_PLAYER_NAME,
+    playerName
+  };
 }
 
-export default alt.createActions(PlayerActions);
+export function setQuestionInfo(about, answers) {
+  return {
+    type: types.SET_QUESTION_INFO,
+    about,
+    answers
+  };
+}
+
+export function isGuessSubmitted(guesses) {
+  return {
+    type: types.IS_GUESS_SUBMITTED,
+    guesses
+  };
+}
+
+export function startGame() {
+  return (dispatch, getState) => {
+    const { player } = getState();
+    return dispatch(
+      sendMessage(playerTypes.PLAYER, player.playerName, messages.START)
+    );
+  };
+}
+
+export function setPlayerName(name) {
+  return [
+    setPlayerType(playerTypes.PLAYER),
+    updatePlayerName(name),
+    sendMessage(playerTypes.PLAYER, name, messages.IDENTIFY)
+  ];
+}
+
+export function submitAnswer(answer) {
+  return (dispatch, getState) => {
+    const { player } = getState();
+    return dispatch(
+      sendMessage(playerTypes.PLAYER, player.playerName, answer)
+    );
+  };
+}
+
+export function submitGuess(answerForGuess) {
+  return (dispatch, getState) => {
+    const { player } = getState();
+    return dispatch(
+      sendMessage(playerTypes.PLAYER, player.playerName, answerForGuess)
+    );
+  };
+}
