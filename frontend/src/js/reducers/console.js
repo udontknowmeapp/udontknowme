@@ -51,8 +51,7 @@ export default function root(state = initialState, action) {
     case types.SET_COMPONENT_TIMER:
       return merge({}, state, {
         timer: action.timer,
-        timerInterval:
-        action.timerInterval
+        timerInterval: action.timerInterval
       });
 
     case types.RESET_TIMER:
