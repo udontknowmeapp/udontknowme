@@ -5,6 +5,7 @@ export default class QuestionComponent extends Component {
   static propTypes = {
     question: PropTypes.string,
     aboutMe: PropTypes.bool,
+    questionAbout: PropTypes.string,
     playerName: PropTypes.string,
     answerSubmitted: PropTypes.bool,
     actions: PropTypes.object
@@ -18,7 +19,7 @@ export default class QuestionComponent extends Component {
   }
 
   render() {
-    const { question, aboutMe, answerSubmitted } = this.props;
+    const { question, aboutMe, questionAbout, answerSubmitted } = this.props;
     const { answer } = this.state;
 
     return (
@@ -31,7 +32,8 @@ export default class QuestionComponent extends Component {
               aboutMe ?
                 'This one\'s about you. Put something obvious for yourself!'
                 :
-                'What do you think your friend\'s answer will be?'
+                `This one's about ${questionAbout}. What do you think their \
+                answer will be?`
             }
           </p>
           {

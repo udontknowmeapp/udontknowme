@@ -113,7 +113,7 @@ export default class GameConsolePage extends Component {
             answers={app.answers}
             submittedGuesses={gameConsole.submittedGuesses}
             timer={gameConsole.timer}
-            action={actions}
+            actions={actions}
           />
         </div>
       </div>

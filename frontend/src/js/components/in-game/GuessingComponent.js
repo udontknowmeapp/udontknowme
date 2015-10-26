@@ -7,13 +7,21 @@ export default class GuessingComponent extends Component {
   static propTypes = {
     answers: PropTypes.array,
     aboutMe: PropTypes.bool,
+    questionAbout: PropTypes.string,
     guessSubmitted: PropTypes.bool,
     playerName: PropTypes.string,
     actions: PropTypes.object
   }
 
   render() {
-    const { aboutMe, guessSubmitted, playerName, answers } = this.props;
+    const {
+      aboutMe,
+      questionAbout,
+      guessSubmitted,
+      playerName,
+      answers
+    } = this.props;
+
     const answersForDisplay = answers.filter(answer => {
       return indexOf(answer.players, playerName) === -1;
     });
@@ -29,6 +37,7 @@ export default class GuessingComponent extends Component {
             !aboutMe && !guessSubmitted &&
               <div>
                 <h2>The Answers</h2>
+                <p><strong>About</strong> - {questionAbout}</p>
                 <ul>
                   {answersForDisplay.map(answer => {
                     return (

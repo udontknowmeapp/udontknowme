@@ -34,7 +34,8 @@ export default class InGamePage extends Component {
 
     // gameConsole props
     gameConsole: PropTypes.shape({
-      players: PropTypes.array
+      players: PropTypes.array,
+      questionAbout: PropTypes.string,
     })
   }
 
@@ -95,7 +96,7 @@ export default class InGamePage extends Component {
   }
 
   renderQuestionAsk() {
-    const { app, player, dispatch } = this.props;
+    const { app, player, gameConsole, dispatch } = this.props;
     const actions = bindActionCreators({ submitAnswer }, dispatch);
 
     return (
@@ -103,6 +104,7 @@ export default class InGamePage extends Component {
         <QuestionComponent
           question={app.question}
           aboutMe={player.aboutMe}
+          questionAbout={gameConsole.questionAbout}
           playerName={player.playerName}
           answerSubmitted={player.answerSubmitted}
           actions={actions}
@@ -112,7 +114,7 @@ export default class InGamePage extends Component {
   }
 
   renderQuestionGuess() {
-    const { app, player, dispatch } = this.props;
+    const { app, player, gameConsole, dispatch } = this.props;
     const actions = bindActionCreators({ submitGuess }, dispatch);
 
     return (
@@ -120,6 +122,7 @@ export default class InGamePage extends Component {
         <GuessingComponent
           answers={app.answers}
           aboutMe={player.aboutMe}
+          questionAbout={gameConsole.questionAbout}
           guessSubmitted={player.guessSubmitted}
           playerName={player.playerName}
           actions={actions}
