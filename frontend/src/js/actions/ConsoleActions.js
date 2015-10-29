@@ -46,11 +46,11 @@ export function setComponentTimer(timer) {
       dispatch(decrementTimer())
     }, 1000);
 
-    return {
+    return dispatch({
       type: types.SET_COMPONENT_TIMER,
       timer,
       timerInterval
-    };
+    });
   };
 }
 

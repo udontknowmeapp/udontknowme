@@ -46,9 +46,11 @@ export default class ServerConnection extends Object {
           break;
       }
 
-      if (data.hasOwnProperty('timer')) {
-        const { timer } = data;
-        this.dispatch(setComponentTimer(timer));
+      if (data.timer != null) {
+        if (data.timer > 0) {
+          console.log('Setting timer...');
+          this.dispatch(setComponentTimer(data.timer));
+        }
       }
 
       this.dispatch(setAppState(state));

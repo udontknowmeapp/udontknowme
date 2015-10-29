@@ -66,14 +66,16 @@ export default function root(state = initialState, action) {
 
     case types.DECREMENT_TIMER:
       if (state.timer === 1) {
+        console.log('Clearing timer...');
         clearInterval(state.timerInterval);
+        console.log(state.timerInterval);
         return merge({}, state, {
           timerInterval: null,
           timer: 0
         });
       } else {
         return merge({}, state, {
-          timer: state.timer--
+          timer: (state.timer - 1)
         });
       }
 
