@@ -3,12 +3,12 @@
   "version": "0.0.1",
   "description": "Front-end for You Don't Know Me. Hack Upstate Fall 2015.",
   "directories": {
-    "test": "test"
+    "test": "./src/js/test"
   },
   "scripts": {
     "clean": "rm -rf build/*",
     "lint": "eslint src",
-    "test": "mocha --compilers js:babel/register --recursive",
+    "test": "mocha ./src/js/test --compilers js:babel/register --recursive --require ./src/js/test/setup.js",
     "build": "npm run clean && webpack --progress --colors --config config/webpack.production.js",
     "build-dev": "npm run clean && webpack --progress --colors --watch --config config/webpack.development.js",
     "dev": "npm run clean && nodemon --exec babel-node --stage 0 -- dev-server.js",
@@ -25,7 +25,6 @@
   "author": "Billy Ceskavich",
   "repository": "https://github.com/bceskavich/udkme-web",
   "dependencies": {
-    "alt": "^0.17.1",
     "autoprefixer-loader": "^2.0.0",
     "babel": "^5.8.23",
     "babel-loader": "^5.3.1",
@@ -49,7 +48,6 @@
     "redux": "^3.0.3",
     "redux-logger": "^2.0.4",
     "redux-multi": "^0.1.9",
-    "redux-react-router": "^0.4.0",
     "redux-router": "^1.0.0-beta3",
     "redux-thunk": "^1.0.0",
     "request": "^2.58.0",
@@ -62,10 +60,11 @@
   },
   "devDependencies": {
     "babel-eslint": "^3.1.23",
-    "babel-jest": "^5.3.0",
     "eslint": "^1.0.0-rc-1",
     "eslint-plugin-react": "^2.7.1",
-    "jest-cli": "^0.5.10",
+    "expect": "^1.12.2",
+    "jsdom": "^7.0.2",
+    "mocha": "^2.3.3",
     "sinon": "^1.17.1"
   }
 }
