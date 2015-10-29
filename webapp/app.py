@@ -21,7 +21,7 @@ class UDKMWebSocket(tornado.websocket.WebSocketHandler):
         print("Message from: {}. Message: {}".format(self, message))
         message_dict = json.loads(message)
         response = UDONTKNOWME.read_message(message_dict)
-        print("Game State: {}".format(UDONTKNOWME.current_state))
+        print("Game State: {}. Response: {}.".format(UDONTKNOWME.current_state, response))
         for client in CONNECTED_CLIENTS:
             client.write_message(response)
 

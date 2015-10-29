@@ -8,7 +8,7 @@ class GameStateMachine(object):
     The state machine that takes incomming messages and moves the state properly.
     """
 
-    TIMER_LENGTH = 10  # seconds
+    TIMER_LENGTH = 61  # seconds
 
     def __init__(self):
         self.game = Game()
@@ -23,14 +23,22 @@ class GameStateMachine(object):
             Return False if the timer that was set previously is not over
         """
         if self.timer:
-            if (datetime.datetime.utcnow().second - datetime.timedelta(seconds=self.TIMER_LENGTH).seconds) > self.timer.second:
+            if (datetime.datetime.utcnow() - datetime.timedelta(seconds=self.TIMER_LENGTH)) > self.timer:
                 self.timer = None
-                print "Timer Over"
                 return True
             else:
                 return False
         else:
             return None
+
+    def seconds_left_in_timer(self):
+        if self.timer:
+            return max(
+                0,
+                60 - (datetime.datetime.utcnow() - self.timer).seconds
+            )
+        else:
+            return 0
 
     def states(self):
         return {
@@ -59,6 +67,7 @@ class GameStateMachine(object):
             'state': '',
             'data': {
                 'message': None,
+                'timer': None,
             },
         }
 
@@ -140,11 +149,11 @@ class GameStateMachine(object):
             if kwargs['message'] == 'start_timer':
                 if self.timer is None:  # there is no timer currently, start the timer
                     self.timer = datetime.datetime.utcnow()
-        if kwargs and kwargs['player_type'] == 'system':  # the system is telling us the timer is up
+        elif kwargs and kwargs['player_type'] == 'system':  # the system is telling us the timer is up
             if kwargs['message'] == 'timer_over':
                 # TODO what to do here?!
                 print "IT WORKED!!!!!"
-        if kwargs and kwargs['player_type'] == 'player' and self.timer_over() is False:  # at this point we're just waiting on players
+        elif kwargs and kwargs['player_type'] == 'player' and self.timer_over() is False:  # at this point we're just waiting on players
             player = self.game.get_player_by_name(kwargs['player_name'])
             question.add_answer(player, kwargs['message'])
             if len(question.answers) == len(self.game.players):
@@ -155,6 +164,7 @@ class GameStateMachine(object):
         message['data']['about'] = question.about_player.name
         message['data']['question'] = question.question
         message['data']['submitted_answers'] = [answer.player.name for answer in question.answers]
+        message['data']['timer'] = self.seconds_left_in_timer()
         return message
 
     def state_question_guess(self, **kwargs):
