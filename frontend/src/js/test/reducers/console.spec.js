@@ -151,5 +151,5 @@ describe('reducers/gameConsole', () => {
     expect(gameConsole(merge({}, initialState, timerInfo), {
       type: rootActionTypes.RESET_AND_END
     })).toEqual(initialState);
-  })
+  });
 });

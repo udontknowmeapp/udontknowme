@@ -12,7 +12,7 @@ const initialState = {
   aboutMe: false
 };
 
-export default function root(state = initialState, action) {
+export default function player(state = initialState, action) {
   switch(action.type) {
     case types.UPDATE_PLAYER_NAME:
       return merge({}, state, { playerName: action.playerName });

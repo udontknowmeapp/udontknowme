@@ -15,7 +15,7 @@ const initialState = {
   timerInterval: null
 };
 
-export default function root(state = initialState, action) {
+export default function player(state = initialState, action) {
   switch(action.type) {
     case types.SET_PLAYERS:
       return merge({}, state, { players: action.players });
