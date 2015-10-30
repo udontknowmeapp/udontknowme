@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-// import TimerWrapper from '../../wrappers/TimerWrapper';
 
 export default class GuessesComponent extends Component {
 
@@ -16,7 +15,6 @@ export default class GuessesComponent extends Component {
 
     const { actions } = this.props;
     actions.resetTimer();
-    actions.startTimer();
   }
 
   render() {
@@ -47,5 +45,3 @@ export default class GuessesComponent extends Component {
     );
   }
 }
-
-// export default TimerWrapper(GuessesComponent);

@@ -1,21 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { setPlayerName } from '../actions/PlayerActions';
 
-export default class PlayerSignupPage extends Component {
-
-  static propTypes = {
-    // ReactRouter Props
-    history: PropTypes.object,
-
-    // app props
-    dispatch: PropTypes.func,
-
-    // player props
-    player: PropTypes.shape({
-      playerName: PropTypes.string
-    }),
-  }
-
+class PlayerSignupPage extends Component {
   constructor(props) {
     super(props);
 
@@ -71,3 +57,18 @@ export default class PlayerSignupPage extends Component {
     dispatch(setPlayerName(newPlayerName));
   }
 }
+
+PlayerSignupPage.propTypes = {
+  // ReactRouter Props
+  history: PropTypes.object,
+
+  // app props
+  dispatch: PropTypes.func,
+
+  // player props
+  player: PropTypes.shape({
+    playerName: PropTypes.string
+  })
+};
+
+export default PlayerSignupPage;

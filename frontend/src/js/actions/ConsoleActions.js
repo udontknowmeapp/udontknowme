@@ -41,16 +41,19 @@ export function addPoints(points) {
 }
 
 export function setComponentTimer(timer) {
-  return dispatch => {
-    let timerInterval = setInterval(() => {
-      dispatch(decrementTimer())
-    }, 1000);
+  return (dispatch, getState) => {
+    const { gameConsole } = getState();
+    if (!gameConsole.timerInterval) {
+      let timerInterval = setInterval(() => {
+        dispatch(decrementTimer())
+      }, 1000);
 
-    return dispatch({
-      type: types.SET_COMPONENT_TIMER,
-      timer,
-      timerInterval
-    });
+      return dispatch({
+        type: types.SET_COMPONENT_TIMER,
+        timer,
+        timerInterval
+      });
+    }
   };
 }
 
@@ -60,12 +63,6 @@ export function decrementTimer() {
 
 export function resetTimer() {
   return { type: types.RESET_TIMER };
-}
-
-export function startTimer() {
-  return dispatch => dispatch(
-    sendMessage(playerTypes.CONSOLE, null, messages.START_TIMER)
-  );
 }
 
 export function identify() {

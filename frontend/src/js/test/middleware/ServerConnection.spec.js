@@ -76,14 +76,6 @@ const mockUri = 'ws://localhost:8080/';
 
 describe('middleware/api + utils/ServerConnection', () => {
   /** TODO
-    *  x Figure out window.location for ServerConnection mocking
-    *  x setAppState()
-    *  x states.LOBBY
-    *  x states.LOBBY && messages.NEW_GAME
-    *  x states.QUESTION_ASK
-    *  x states.QUESTION_GUESS
-    *  x states.SHOW_RESULTS
-    *  x states.SHOW_POINTS
     *  - data.timer != null && data.timer > 0
     */
   beforeEach(() => global.WebSocket = MockSocket);

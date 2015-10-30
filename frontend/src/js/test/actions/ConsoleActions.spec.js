@@ -103,24 +103,6 @@ describe('actions/ConsoleActions', () => {
     });
   });
 
-  it('startTimer should create an app.SEND_MESSAGE action', (done) => {
-    const mockState = { app: { conn: 'CONN' }};
-    const player_type = playerTypes.CONSOLE;
-    const player_name = null;
-    const message = messages.START_TIMER;
-
-    const expectedActions = [{
-      type: rootActionTypes.SEND_MESSAGE,
-      conn: mockState.app.conn,
-      player_type,
-      player_name,
-      message
-    }];
-
-    const store = mockStore(mockState, expectedActions, done);
-    store.dispatch(ConsoleActions.startTimer());
-  });
-
   it('identify should create app.SET_PLAYER_TYPE and app.SEND_MESSAGE actions', (done) => {
     const mockState = { app: { conn: 'CONN' }};
     const player_type = playerTypes.CONSOLE;
