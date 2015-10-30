@@ -46,9 +46,9 @@ export default class ServerConnection extends Object {
           break;
       }
 
+      // TODO - check for exisiting timer, only start if timer doesn't exist
       if (data.timer != null) {
         if (data.timer > 0) {
-          console.log('Setting timer...');
           this.dispatch(setComponentTimer(data.timer));
         }
       }
