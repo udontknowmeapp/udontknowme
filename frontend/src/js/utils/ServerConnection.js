@@ -1,6 +1,5 @@
 import messages from '../constants/messagesConstants';
 import states from '../constants/stateConstants';
-import { getSocketUri } from './webSocketUtils';
 import {
   setPlayers,
   addGuessResults,
@@ -16,10 +15,10 @@ import {
 
 export default class ServerConnection extends Object {
 
-  constructor(dispatch) {
+  constructor(uri, dispatch) {
     super();
 
-    this.socket = new WebSocket(getSocketUri());
+    this.socket = new WebSocket(uri);
     this.dispatch = dispatch;
 
     this.socket.onmessage = (payload) => {

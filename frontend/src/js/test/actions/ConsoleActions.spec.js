@@ -91,8 +91,6 @@ describe('actions/ConsoleActions', () => {
     });
   });
 
-  // SET_COMPONENT_TIMER
-
   it('decrementTimer should create a DECREMENT_TIMER action', () => {
     expect(ConsoleActions.decrementTimer()).toEqual({
       type: types.DECREMENT_TIMER

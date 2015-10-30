@@ -1,11 +1,13 @@
 import { rootActionTypes } from '../constants/actionConstants';
+import { getSocketUri } from '../utils/webSocketUtils';
 import ServerConnection from '../utils/ServerConnection';
 
 export default store => next => action => {
   const { type } = action;
 
   if (type === rootActionTypes.CONNECTION) {
-    action.conn = new ServerConnection(action.dispatch);
+    const uri = getSocketUri();
+    action.conn = new ServerConnection(uri, action.dispatch);
     return next(action);
   }
 
