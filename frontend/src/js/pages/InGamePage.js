@@ -3,12 +3,14 @@ import { bindActionCreators } from 'redux';
 import LobbyComponent from '../components/in-game/LobbyComponent';
 import QuestionComponent from '../components/in-game/QuestionComponent';
 import GuessingComponent from '../components/in-game/GuessingComponent';
+import GameOverComponent from '../components/in-game/GameOverComponent';
 import states from '../constants/stateConstants';
 import {
   startGame,
   submitAnswer,
   submitGuess
 } from '../actions/PlayerActions';
+import { startNewGame } from '../actions/AppActions';
 
 export default class InGamePage extends Component {
 
@@ -68,6 +70,9 @@ export default class InGamePage extends Component {
       case states.SHOW_RESULTS:
       case states.SHOW_POINTS:
         return this.renderResults();
+        break;
+      case states.GAME_OVER:
+        return this.renderGameOver();
         break;
     }
   }
@@ -137,6 +142,12 @@ export default class InGamePage extends Component {
         <h1>Hang tight for this round's results!</h1>
       </span>
     );
+  }
+
+  renderGameOver() {
+    const { dispatch } = this.props;
+    const actions = bindActionCreators({ startNewGame }, dispatch);
+    return <GameOverComponent startNewGame={actions.startNewGame} />;
   }
 
   transitionIfNotPlayer() {

@@ -6,7 +6,7 @@ const states = {
   QUESTION_GUESS: 'question_guess',
   SHOW_RESULTS: 'show_results',
   SHOW_POINTS: 'show_points',
-  END: 'end',
+  GAME_OVER: 'game_over',
   ERROR: 'error'
 };
 

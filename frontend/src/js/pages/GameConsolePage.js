@@ -7,11 +7,11 @@ import GuessesComponent from '../components/game-console/GuessesComponent';
 import ResultsComponent from '../components/game-console/ResultsComponent';
 import {
   resetTimer,
-  startTimer,
   identify,
   introCompleted,
   getNextResults
 } from '../actions/ConsoleActions';
+import { startNewGame } from '../actions/AppActions';
 
 export default class GameConsolePage extends Component {
 
@@ -61,6 +61,9 @@ export default class GameConsolePage extends Component {
       case states.SHOW_RESULTS:
       case states.SHOW_POINTS:
         return this.renderResults();
+        break;
+      case states.GAME_OVER:
+        return this.renderGameOver();
         break;
     }
   }
@@ -131,6 +134,22 @@ export default class GameConsolePage extends Component {
             appState={app.appState}
             question={app.question}
             guessResults={gameConsole.guessResults}
+            points={gameConsole.points}
+            actions={actions}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  renderGameOver() {
+    const { gameConsole, dispatch } = this.props;
+    const actions = bindActionCreators({ startNewGame }, dispatch);
+
+    return (
+      <div className='game-console-page'>
+        <div className='game-console-page-content'>
+          <GameOverComponent
             points={gameConsole.points}
             actions={actions}
           />
