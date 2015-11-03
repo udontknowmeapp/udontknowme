@@ -14,8 +14,7 @@
     "dev": "npm run clean && nodemon --exec babel-node --stage 0 -- dev-server.js",
     "watch": "npm run build-dev",
     "postinstall": "NODE_ENV=production DEPLOY=heroku npm run build",
-    "start": "babel-node --stage 0 -- server.js",
-    "dev-server": "npm run watch && python ../webapp/app.py"
+    "start": "babel-node --stage 0 -- server.js"
   },
   "engines": {
     "node": "4.0.0",

@@ -88,7 +88,7 @@ export default class GameConsolePage extends Component {
 
   renderQuestionAsk() {
     const { app, gameConsole, dispatch } = this.props;
-    const actions = bindActionCreators({ resetTimer, startTimer }, dispatch);
+    const actions = bindActionCreators({ resetTimer }, dispatch);
 
     return (
       <div className='game-console-page'>
@@ -107,7 +107,7 @@ export default class GameConsolePage extends Component {
 
   renderQuestionGuess() {
     const { app, gameConsole, dispatch } = this.props;
-    const actions = bindActionCreators({ resetTimer, startTimer }, dispatch);
+    const actions = bindActionCreators({ resetTimer }, dispatch);
 
     return (
       <div className='game-console-page'>
