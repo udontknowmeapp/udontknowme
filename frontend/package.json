@@ -13,10 +13,9 @@
     "build-dev": "npm run clean && webpack --progress --colors --watch --config config/webpack.development.js",
     "dev": "npm run clean && nodemon --exec babel-node --stage 0 -- dev-server.js",
     "watch": "npm run build-dev",
-    "stage": "NODE_ENV=production npm run build && surge --project ./build --domain udontknowme.surge.sh",
-    "heroku": "git push heroku master",
     "postinstall": "NODE_ENV=production DEPLOY=heroku npm run build",
-    "start": "babel-node --stage 0 -- server.js"
+    "start": "babel-node --stage 0 -- server.js",
+    "dev-server": "npm run watch && python ../webapp/app.py"
   },
   "engines": {
     "node": "4.0.0",

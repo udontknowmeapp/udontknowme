@@ -54,7 +54,7 @@ export function setComponentTimer(timer) {
         timerInterval
       });
     }
-  };
+  }
 }
 
 export function decrementTimer() {

@@ -25,8 +25,6 @@ export default class ServerConnection extends Object {
       const messageData = JSON.parse(payload.data);
       const { state, data } = messageData;
 
-      console.log(messageData);
-
       switch (state) {
         case states.LOBBY:
           this.handleLobbyState(data);

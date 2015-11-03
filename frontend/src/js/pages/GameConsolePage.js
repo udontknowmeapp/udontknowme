@@ -5,6 +5,7 @@ import GameLobby from '../components/game-console/GameLobby';
 import QuestionComponent from '../components/game-console/QuestionComponent';
 import GuessesComponent from '../components/game-console/GuessesComponent';
 import ResultsComponent from '../components/game-console/ResultsComponent';
+import GameOverComponent from '../components/game-console/GameOverComponent';
 import {
   resetTimer,
   identify,
