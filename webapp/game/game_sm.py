@@ -8,7 +8,7 @@ class GameStateMachine(object):
     The state machine that takes incomming messages and moves the state properly.
     """
 
-    TIMER_LENGTH = 61  # seconds
+    TIMER_LENGTH = 31  # seconds
 
     def __init__(self):
         self.game = Game()
@@ -35,7 +35,7 @@ class GameStateMachine(object):
         if self.timer:
             return max(
                 0,
-                60 - (datetime.datetime.utcnow() - self.timer).seconds
+                self.TIMER_LENGTH - (datetime.datetime.utcnow() - self.timer).seconds
             )
         else:
             return 0
@@ -145,19 +145,19 @@ class GameStateMachine(object):
 
     def state_question_ask(self, **kwargs):
         question = self.game.current_question
-        if kwargs and kwargs['player_type'] == 'console':  # start the timer
-            if kwargs['message'] == 'start_timer':
-                if self.timer is None:  # there is no timer currently, start the timer
-                    self.timer = datetime.datetime.utcnow()
-        elif kwargs and kwargs['player_type'] == 'system':  # the system is telling us the timer is up
+        if kwargs and kwargs['player_type'] == 'system':  # the system is telling us the timer is up
             if kwargs['message'] == 'timer_over':
-                # TODO what to do here?!
-                print "IT WORKED!!!!!"
-        elif kwargs and kwargs['player_type'] == 'player' and self.timer_over() is False:  # at this point we're just waiting on players
+                self.current_state = 'question_guess'  # STATE CHANGE
+                return self.states[self.current_state]()
+        # TODO this is async code. We shouldn't allow the user to submit after the timer was set and it's timer_over is True
+        elif kwargs and kwargs['player_type'] == 'player':  # at this point we're just waiting on players
             player = self.game.get_player_by_name(kwargs['player_name'])
             question.add_answer(player, kwargs['message'])
+            if player is question.about_player:
+                self.timer = datetime.datetime.utcnow()
             if len(question.answers) == len(self.game.players):
                 self.current_state = 'question_guess'  # STATE CHANGE
+                self.timer = datetime.datetime.utcnow()
                 return self.states[self.current_state]()
         message = self.blank_message()
         message['state'] = self.current_state
@@ -169,11 +169,13 @@ class GameStateMachine(object):
 
     def state_question_guess(self, **kwargs):
         question = self.game.current_question
-        if kwargs and kwargs['player_type'] == 'console':  # start the timer
-            if kwargs['message'] == 'start_timer':
-                if self.timer is None:  # there is no timer currently, start the timer
-                    self.timer = datetime.datetime.utcnow()
-        if kwargs and kwargs['player_type'] == 'player':  # at this point we're just waiting on players
+        if kwargs and kwargs['player_type'] == 'system':  # the system is telling us the timer is up
+            if kwargs['message'] == 'timer_over':
+                question.award_points()
+                self.current_state = 'show_results'  # STATE CHANGE
+                return self.states[self.current_state]()
+        # This is async code. We shouldn't allow th euser to submit after the timr was set and it's timer_over is True
+        elif kwargs and kwargs['player_type'] == 'player':  # at this point we're just waiting on players
             player = self.game.get_player_by_name(kwargs['player_name'])
             question.add_guess(player, kwargs['message'])
             if question.num_guesses() == len(self.game.players) - 1:  # because the user it's about doesn't guess
@@ -182,6 +184,7 @@ class GameStateMachine(object):
                 return self.states[self.current_state]()
         message = self.blank_message()
         message['state'] = self.current_state
+        message['data']['timer'] = self.seconds_left_in_timer()
         message['data']['answers'] = [
             {
                 'answer': answer_string,
