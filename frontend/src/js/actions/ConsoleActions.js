@@ -41,9 +41,12 @@ export function addPoints(points) {
 }
 
 export function setComponentTimer(timer) {
+  console.log('Setting timer...');
   return (dispatch, getState) => {
     const { gameConsole } = getState();
+    console.log(gameConsole.timerInterval);
     if (!gameConsole.timerInterval) {
+      console.log('No timer, so actually setting...');
       let timerInterval = setInterval(() => {
         dispatch(decrementTimer())
       }, 1000);
@@ -62,6 +65,7 @@ export function decrementTimer() {
 }
 
 export function resetTimer() {
+  console.log('Resetting timer...');
   return { type: types.RESET_TIMER };
 }
 
