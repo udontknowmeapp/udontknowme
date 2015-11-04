@@ -97,7 +97,6 @@ export default class GameConsolePage extends Component {
             timer={gameConsole.timer}
             about={gameConsole.questionAbout}
             submittedAnswers={gameConsole.submittedAnswers}
-            actions={actions}
           />
         </div>
       </div>
