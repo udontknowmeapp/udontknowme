@@ -48,6 +48,7 @@ class GameStateMachine(object):
             'question_guess': self.state_question_guess,
             'show_results': self.state_show_results,
             'show_points': self.state_show_points,
+            'game_over': self.state_game_over,
         }
 
     def new_game(self):
@@ -224,8 +225,23 @@ class GameStateMachine(object):
         if kwargs and kwargs['player_type'] == 'console':  # at this point we're just waiting on the console to say it's done
             if kwargs['message'] == 'points_complete':
                 self.current_state = 'question_ask'  # STATE CHANGE
-                self.game.go_to_next_question()
-                return self.states[self.current_state]()
+                if self.game.go_to_next_question() is not None:
+                    return self.states[self.current_state]()
+                else:
+                    self.current_state = 'game_over'
+                    return self.states[self.current_state]()
+        message = self.blank_message()
+        message['state'] = self.current_state
+        message['data']['points'] = [
+            {
+                'player': player.name,
+                'points': player.points,
+            }
+            for player in self.game.players_sorted_by_points()
+        ]
+        return message
+
+    def state_game_over(self, **kwargs):
         message = self.blank_message()
         message['state'] = self.current_state
         message['data']['points'] = [
