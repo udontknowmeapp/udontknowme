@@ -20,9 +20,12 @@ export function setQuestionInfo(about, answers) {
 }
 
 export function addGuessResults(guessResults) {
-  return {
-    type: types.ADD_GUESS_RESULTS,
-    guessResults
+  return dispatch => {
+    dispatch(resetTimer());
+    return dispatch({
+      type: types.ADD_GUESS_RESULTS,
+      guessResults
+    });
   };
 }
 

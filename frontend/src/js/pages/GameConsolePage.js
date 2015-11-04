@@ -7,7 +7,6 @@ import GuessesComponent from '../components/game-console/GuessesComponent';
 import ResultsComponent from '../components/game-console/ResultsComponent';
 import GameOverComponent from '../components/game-console/GameOverComponent';
 import {
-  resetTimer,
   identify,
   introCompleted,
   getNextResults
@@ -122,7 +121,7 @@ export default class GameConsolePage extends Component {
 
   renderResults() {
     const { app, gameConsole, dispatch } = this.props;
-    const actions = bindActionCreators({ resetTimer, getNextResults }, dispatch);
+    const actions = bindActionCreators({ getNextResults }, dispatch);
 
     return (
       <div className='game-console-page'>
