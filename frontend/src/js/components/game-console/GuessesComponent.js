@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 export default class GuessesComponent extends Component {
 
   static propTypes = {
-    timer: PropTypes.timer,
+    timer: PropTypes.number,
     question: PropTypes.string,
     answers: PropTypes.array,
     submittedGuesses: PropTypes.array,
