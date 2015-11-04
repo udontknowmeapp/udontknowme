@@ -179,6 +179,7 @@ class GameStateMachine(object):
             player = self.game.get_player_by_name(kwargs['player_name'])
             question.add_guess(player, kwargs['message'])
             if question.num_guesses() == len(self.game.players) - 1:  # because the user it's about doesn't guess
+                self.timer = None
                 question.award_points()
                 self.current_state = 'show_results'  # STATE CHANGE
                 return self.states[self.current_state]()
