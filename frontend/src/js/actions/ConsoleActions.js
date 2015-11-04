@@ -37,7 +37,7 @@ export function setGuesses(submittedGuesses) {
   return (dispatch, getState) => {
     // If coming from question ask, reset the previous timer
     const { app } = getState();
-    if (appState === states.QUESTION_ASK) {
+    if (app.appState === states.QUESTION_ASK) {
       dispatch(resetTimer());
     }
 
