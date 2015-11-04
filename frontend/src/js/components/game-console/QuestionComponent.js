@@ -7,14 +7,6 @@ export default class QuestionComponent extends Component {
     question: PropTypes.string,
     about: PropTypes.string,
     submittedAnswers: PropTypes.array,
-    actions: PropTypes.object
-  }
-
-  constructor(props) {
-    super(props);
-
-    const { actions } = this.props;
-    actions.resetTimer();
   }
 
   render() {

@@ -19,13 +19,6 @@ export function setQuestionInfo(about, answers) {
   };
 }
 
-export function setGuesses(submittedGuesses) {
-  return {
-    type: types.SET_GUESSES,
-    submittedGuesses
-  };
-}
-
 export function addGuessResults(guessResults) {
   return {
     type: types.ADD_GUESS_RESULTS,
@@ -40,13 +33,25 @@ export function addPoints(points) {
   };
 }
 
+export function setGuesses(submittedGuesses) {
+  return (dispatch, getState) => {
+    // If coming from question ask, reset the previous timer
+    const { app } = getState();
+    if (appState === states.QUESTION_ASK) {
+      dispatch(resetTimer());
+    }
+
+    return dispatch({
+      type: types.SET_GUESSES,
+      submittedGuesses
+    });
+  }
+}
+
 export function setComponentTimer(timer) {
-  console.log('Setting timer...');
   return (dispatch, getState) => {
     const { gameConsole } = getState();
-    console.log(gameConsole.timerInterval);
     if (!gameConsole.timerInterval) {
-      console.log('No timer, so actually setting...');
       let timerInterval = setInterval(() => {
         dispatch(decrementTimer())
       }, 1000);
@@ -65,7 +70,6 @@ export function decrementTimer() {
 }
 
 export function resetTimer() {
-  console.log('Resetting timer...');
   return { type: types.RESET_TIMER };
 }
 

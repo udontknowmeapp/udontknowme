@@ -7,14 +7,6 @@ export default class GuessesComponent extends Component {
     question: PropTypes.string,
     answers: PropTypes.array,
     submittedGuesses: PropTypes.array,
-    actions: PropTypes.object,
-  }
-
-  constructor(props) {
-    super(props);
-
-    const { actions } = this.props;
-    actions.resetTimer();
   }
 
   render() {
