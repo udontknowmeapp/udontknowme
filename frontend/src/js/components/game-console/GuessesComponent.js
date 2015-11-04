@@ -6,7 +6,7 @@ export default class GuessesComponent extends Component {
     timer: PropTypes.number,
     question: PropTypes.string,
     answers: PropTypes.array,
-    submittedGuesses: PropTypes.array,
+    submittedGuesses: PropTypes.array
   }
 
   render() {
