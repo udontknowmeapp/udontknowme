@@ -13,8 +13,7 @@ const initialState = {
   submittedGuesses: [],
   guessResults: [],
   points: [],
-  timer: 0,
-  timerInterval: null
+  timer: 0
 };
 
 describe('reducers/gameConsole', () => {
@@ -72,26 +71,18 @@ describe('reducers/gameConsole', () => {
   });
 
   it('should handle SET_COMPONENT_TIMER', () => {
-    const timerInfo = {
-      timer: 60,
-      timerInterval: 89
-    };
+    const timerInfo = { timer: 60 };
     expect(gameConsole(undefined, {
       type: types.SET_COMPONENT_TIMER,
-      timer: timerInfo.timer,
-      timerInterval: timerInfo.timerInterval
+      timer: timerInfo.timer
     })).toEqual(merge({}, initialState, timerInfo));
   });
 
   it('should handle RESET_TIMER', () => {
-    const timerInfo = {
-      timer: 60,
-      timerInterval: 89
-    };
+    const timerInfo = { timer: 60 };
     gameConsole(undefined, {
       type: types.SET_COMPONENT_TIMER,
-      timer: timerInfo.timer,
-      timerInterval: timerInfo.timerInterval
+      timer: timerInfo.timer
     });
 
     expect(gameConsole(merge({}, initialState, timerInfo), {
@@ -99,41 +90,31 @@ describe('reducers/gameConsole', () => {
     })).toEqual(initialState);
   });
 
-  it('should handle decrement the timer if > 1 on DECREMENT_TIMER', () => {
-    const timerInfo = {
-      timer: 60,
-      timerInterval: 89
-    };
+  it('should handle decrement the timer if > 0 on DECREMENT_TIMER', () => {
+    const timerInfo = { timer: 60 };
     gameConsole(undefined, {
       type: types.SET_COMPONENT_TIMER,
-      timer: timerInfo.timer,
-      timerInterval: timerInfo.timerInterval
+      timer: timerInfo.timer
     });
 
     expect(gameConsole(merge({}, initialState, timerInfo), {
       type: types.DECREMENT_TIMER
     })).toEqual(merge({}, initialState, {
-      timer: (timerInfo.timer - 1),
-      timerInterval: timerInfo.timerInterval
+      timer: (timerInfo.timer - 1)
     }));
   });
 
-  it('should reset the timer if timer === 1 on DECREMENT_TIMER', () => {
-    const timerInfo = {
-      timer: 1,
-      timerInterval: 89
-    };
+  it('should do nothing if timer <= 0 on DECREMENT_TIMER', () => {
+    const timerInfo = { timer: 0 };
     gameConsole(undefined, {
       type: types.SET_COMPONENT_TIMER,
-      timer: timerInfo.timer,
-      timerInterval: timerInfo.timerInterval
+      timer: timerInfo.timer
     });
 
     expect(gameConsole(merge({}, initialState, timerInfo), {
       type: types.DECREMENT_TIMER
     })).toEqual(merge({}, initialState, {
-      timer: 0,
-      timerInterval: null
+      timer: 0
     }));
   });
 

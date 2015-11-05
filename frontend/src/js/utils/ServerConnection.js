@@ -43,11 +43,10 @@ export default class ServerConnection extends Object {
           break;
       }
 
+      this.dispatch(setAppState(state));
       if (data.timer != null && data.timer > 0) {
         this.dispatch(setComponentTimer(data.timer));
       }
-
-      this.dispatch(setAppState(state));
     }
   }
 

@@ -15,8 +15,11 @@ export default class ResultsComponent extends Component {
     this.showNext();
   }
 
-  componentDidUpdate() {
-    this.showNext();
+  componentWillUpdate(nextProps) {
+    const { appState } = this.props;
+    if (appState !== nextProps.appState) {
+      this.showNext();
+    }
   }
 
   render() {

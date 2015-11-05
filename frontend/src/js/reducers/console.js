@@ -11,8 +11,7 @@ const initialState = {
   submittedGuesses: [],
   guessResults: [],
   points: [],
-  timer: 0,
-  timerInterval: null
+  timer: 0
 };
 
 export default function player(state = initialState, action) {
@@ -49,29 +48,15 @@ export default function player(state = initialState, action) {
       return merge({}, state, { points: action.points });
 
     case types.SET_COMPONENT_TIMER:
-      return merge({}, state, {
-        timer: action.timer,
-        timerInterval: action.timerInterval
-      });
-
-    case types.RESET_TIMER:
-      if (state.timerInterval) {
-        clearInterval(state.timerInterval)
+      if (state.timer === 0) {
+        return merge({}, state, { timer: action.timer });
       }
 
-      return merge({}, state, {
-        timerInterval: null,
-        timer: 0
-      });
+    case types.RESET_TIMER:
+      return merge({}, state, { timer: 0 });
 
     case types.DECREMENT_TIMER:
-      if (state.timer === 1) {
-        clearInterval(state.timerInterval);
-        return merge({}, state, {
-          timerInterval: null,
-          timer: 0
-        });
-      } else {
+      if (state.timer > 0) {
         return merge({}, state, {
           timer: (state.timer - 1)
         });

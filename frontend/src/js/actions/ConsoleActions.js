@@ -20,12 +20,9 @@ export function setQuestionInfo(about, answers) {
 }
 
 export function addGuessResults(guessResults) {
-  return dispatch => {
-    dispatch(resetTimer());
-    return dispatch({
-      type: types.ADD_GUESS_RESULTS,
-      guessResults
-    });
+  return {
+    type: types.ADD_GUESS_RESULTS,
+    guessResults
   };
 }
 
@@ -37,35 +34,17 @@ export function addPoints(points) {
 }
 
 export function setGuesses(submittedGuesses) {
-  return (dispatch, getState) => {
-    // If coming from question ask, reset the previous timer
-    const { app } = getState();
-    if (app.appState === states.QUESTION_ASK) {
-      dispatch(resetTimer());
-    }
-
-    return dispatch({
-      type: types.SET_GUESSES,
-      submittedGuesses
-    });
-  }
+  return {
+    type: types.SET_GUESSES,
+    submittedGuesses
+  };
 }
 
 export function setComponentTimer(timer) {
-  return (dispatch, getState) => {
-    const { gameConsole } = getState();
-    if (!gameConsole.timerInterval) {
-      let timerInterval = setInterval(() => {
-        dispatch(decrementTimer())
-      }, 1000);
-
-      return dispatch({
-        type: types.SET_COMPONENT_TIMER,
-        timer,
-        timerInterval
-      });
-    }
-  }
+  return {
+    type: types.SET_COMPONENT_TIMER,
+    timer
+  };
 }
 
 export function decrementTimer() {

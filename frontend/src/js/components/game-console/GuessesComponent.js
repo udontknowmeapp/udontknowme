@@ -6,7 +6,25 @@ export default class GuessesComponent extends Component {
     timer: PropTypes.number,
     question: PropTypes.string,
     answers: PropTypes.array,
-    submittedGuesses: PropTypes.array
+    submittedGuesses: PropTypes.array,
+    actions: PropTypes.object
+  }
+
+  constructor(props) {
+    super(props);
+
+    const { actions } = this.props;
+    this.state = {
+      interval: setInterval(() => actions.decrementTimer(), 1000)
+    }
+  }
+
+  componentWillUnmount() {
+    const { actions } = this.props;
+    const { interval } = this.state;
+
+    actions.resetTimer();
+    clearInterval(interval);
   }
 
   render() {

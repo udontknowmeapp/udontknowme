@@ -9,7 +9,9 @@ import GameOverComponent from '../components/game-console/GameOverComponent';
 import {
   identify,
   introCompleted,
-  getNextResults
+  getNextResults,
+  decrementTimer,
+  resetTimer
 } from '../actions/ConsoleActions';
 import { startNewGame } from '../actions/AppActions';
 
@@ -86,7 +88,8 @@ export default class GameConsolePage extends Component {
   }
 
   renderQuestionAsk() {
-    const { app, gameConsole } = this.props;
+    const { app, gameConsole, dispatch } = this.props;
+    const actions = bindActionCreators({ decrementTimer, resetTimer }, dispatch);
 
     return (
       <div className='game-console-page'>
@@ -96,6 +99,7 @@ export default class GameConsolePage extends Component {
             timer={gameConsole.timer}
             about={gameConsole.questionAbout}
             submittedAnswers={gameConsole.submittedAnswers}
+            actions={actions}
           />
         </div>
       </div>
@@ -103,7 +107,8 @@ export default class GameConsolePage extends Component {
   }
 
   renderQuestionGuess() {
-    const { app, gameConsole } = this.props;
+    const { app, gameConsole, dispatch } = this.props;
+    const actions = bindActionCreators({ decrementTimer, resetTimer }, dispatch);
 
     return (
       <div className='game-console-page'>
@@ -113,6 +118,7 @@ export default class GameConsolePage extends Component {
             answers={app.answers}
             submittedGuesses={gameConsole.submittedGuesses}
             timer={gameConsole.timer}
+            actions={actions}
           />
         </div>
       </div>
