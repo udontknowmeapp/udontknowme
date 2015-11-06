@@ -50,6 +50,8 @@ export default function player(state = initialState, action) {
     case types.SET_COMPONENT_TIMER:
       if (state.timer === 0) {
         return merge({}, state, { timer: action.timer });
+      } else {
+        return state;
       }
 
     case types.RESET_TIMER:
