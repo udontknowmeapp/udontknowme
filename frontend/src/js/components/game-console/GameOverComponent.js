@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
+import PointsItem from './PointsItem';
 
-class ResultsComponent extends Component {
+class GameOverComponent extends Component {
   render() {
     const { points, actions } = this.props;
 
@@ -13,9 +14,12 @@ class ResultsComponent extends Component {
           {
             points.map((p, i) => {
               return (
-                <li key={i}>
-                  <em>{p.player} {i === 0 && '(Winner)'}</em> - {p.points}
-                </li>
+                <PointsItem
+                  key={i}
+                  playerName={p.player}
+                  points={p.points}
+                  winner={i === 0 ? true : false}
+                />
               );
             })
           }
@@ -30,9 +34,9 @@ class ResultsComponent extends Component {
   }
 }
 
-ResultsComponent.propTypes = {
+GameOverComponent.propTypes = {
   points: PropTypes.array,
   actions: PropTypes.object
 };
 
-export default ResultsComponent;
+export default GameOverComponent;

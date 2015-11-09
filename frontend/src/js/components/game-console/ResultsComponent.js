@@ -1,59 +1,44 @@
 import React, { Component, PropTypes } from 'react';
+import PointsItem from './PointsItem';
+import QuestionResults from './QuestionResults';
+import stateConstants from '../../constants/stateConstants';
 
-export default class ResultsComponent extends Component {
-
-  static propTypes = {
-    appState: PropTypes.string,
-    question: PropTypes.string,
-    guessResults: PropTypes.array,
-    points: PropTypes.array,
-    actions: PropTypes.object
-  }
-
+class ResultsComponent extends Component {
   constructor(props) {
     super(props);
-    this.showNext();
   }
 
   componentWillUpdate(nextProps) {
-    const { appState } = this.props;
-    if (appState !== nextProps.appState) {
+    if (nextProps.appState === stateConstants.SHOW_POINTS) {
       this.showNext();
     }
   }
 
   render() {
-    const { question, guessResults, points } = this.props;
+    const { question, guessResults, points, actions } = this.props;
 
     return (
       <div>
         <h2>{question}</h2>
         <p className='console-about'>The results...</p>
-        <ul className='console-questions-list'>
-          {
-            guessResults.map((result, i) => {
-              const guessedBy = result.guessed.join(',');
-              const wroteBy = result.wrote.join(',');
 
-              return (
-                <li key={i}>
-                  <em>Answer</em> - {result.answer}<br />
-                  {wroteBy}'s {result.truth ? 'truth' : 'lie'}!<br />
-                  <em>Guessed By:</em> - {guessedBy ? guessedBy : 'No One'}
-                  <br />
-                  <br />
-                </li>
-              );
-            })
-          }
-        </ul>
+        <QuestionResults
+          guessResults={guessResults}
+          showPoints={actions.getNextResults}
+        />
+
         <br />
         <h3>Points</h3>
         <ul className='console-questions-list'>
           {
             points.map((p, i) => {
               return (
-                <li><em>{p.player}</em> - {p.points}</li>
+                <PointsItem
+                  key={i}
+                  playerName={p.player}
+                  points={p.points}
+                  winner={false}
+                />
               );
             })
           }
@@ -67,3 +52,13 @@ export default class ResultsComponent extends Component {
     setTimeout(() => actions.getNextResults(), 10000);
   }
 }
+
+ResultsComponent.propTypes = {
+  appState: PropTypes.string,
+  question: PropTypes.string,
+  guessResults: PropTypes.array,
+  points: PropTypes.array,
+  actions: PropTypes.object
+}
+
+export default ResultsComponent;
