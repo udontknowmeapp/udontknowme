@@ -18,7 +18,7 @@ ResultsItem.propTypes = {
   guessed: PropTypes.array,
   author: PropTypes.array,
   answer: PropTypes.string,
-  truth: PropTypes.string
+  truth: PropTypes.bool
 }
 
 export default ResultsItem;

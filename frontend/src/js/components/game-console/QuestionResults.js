@@ -12,7 +12,7 @@ class QuestionResults extends Component {
       resultForView
     };
 
-    // setTimeout(() => this.showNextResult(), 5000);
+    setTimeout(() => this.showNextResult(), 5000);
   }
 
   render() {
