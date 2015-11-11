@@ -8,7 +8,7 @@ class ResultsItem extends Component {
       <div className='console-results-item'>
         <p className='console-results-item__answer'><strong>Answer</strong> - {answer}</p>
         <p><strong>Guessed By</strong> - {guessed.length ? guessed.join(',') : 'No one'}</p>
-        <p><em>{author}'s {truth ? 'truth' : 'lie'}</em></p>
+        <p><em>{author.join(',')}'s {truth ? 'truth' : 'lie'}</em></p>
       </div>
     );
   }

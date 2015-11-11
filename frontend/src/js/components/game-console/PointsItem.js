@@ -15,7 +15,7 @@ class PointsItem extends Component {
 PointsItem.propTypes = {
   playerName: PropTypes.string,
   points: PropTypes.number,
-  winner: PropTypes.boolean
+  winner: PropTypes.bool
 };
 
 export default PointsItem;
