@@ -52,7 +52,7 @@ QUESTIONS_LIST = [
     "The first time I blacked out I drank ______.",
     "My show's theme song is titled ______.",
     "My face turns red when people call me ______.",
-    "I thought no one was home and I was ______. Whoops! ¯\_(ツ)_/¯",
+    "I thought no one was home and I was ______. Whoops!",
     "My street name is ______.",
     "If I were calling the shots, ______ would be heavily subsidized.",
     "If Abe Lincoln was naked in my bedroom, I would ______.",
