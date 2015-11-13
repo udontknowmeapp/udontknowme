@@ -2,17 +2,7 @@ import indexOf from 'lodash/array/indexOf';
 import React, { Component, PropTypes } from 'react';
 import GuessingItem from './GuessingItem';
 
-export default class GuessingComponent extends Component {
-
-  static propTypes = {
-    answers: PropTypes.array,
-    aboutMe: PropTypes.bool,
-    questionAbout: PropTypes.string,
-    guessSubmitted: PropTypes.bool,
-    playerName: PropTypes.string,
-    actions: PropTypes.object
-  }
-
+class GuessingComponent extends Component {
   render() {
     const {
       aboutMe,
@@ -64,3 +54,14 @@ export default class GuessingComponent extends Component {
     actions.submitGuess(answerForGuess);
   }
 }
+
+GuessingComponent.propTypes = {
+  answers: PropTypes.array,
+  aboutMe: PropTypes.bool,
+  questionAbout: PropTypes.string,
+  guessSubmitted: PropTypes.bool,
+  playerName: PropTypes.string,
+  actions: PropTypes.object
+};
+
+export default GuessingComponent;

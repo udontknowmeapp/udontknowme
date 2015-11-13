@@ -12,35 +12,7 @@ import {
 } from '../actions/PlayerActions';
 import { startNewGame } from '../actions/AppActions';
 
-export default class InGamePage extends Component {
-
-  static propTypes = {
-    // ReactRouter props
-    history: PropTypes.object,
-
-    // app props
-    dispatch: PropTypes.func,
-    app: PropTypes.shape({
-      appState: PropTypes.string,
-      question: PropTypes.string,
-      answers: PropTypes.array,
-    }),
-
-    // player props
-    player: PropTypes.shape({
-      playerName: PropTypes.string,
-      aboutMe: PropTypes.bool,
-      answerSubmitted: PropTypes.bool,
-      guessSubmitted: PropTypes.bool,
-    }),
-
-    // gameConsole props
-    gameConsole: PropTypes.shape({
-      players: PropTypes.array,
-      questionAbout: PropTypes.string,
-    })
-  }
-
+class InGamePage extends Component {
   constructor(props) {
     super(props);
     this.transitionIfNotPlayer();
@@ -157,3 +129,32 @@ export default class InGamePage extends Component {
     }
   }
 }
+
+InGamePage.propTypes = {
+  // ReactRouter props
+  history: PropTypes.object,
+
+  // app props
+  dispatch: PropTypes.func,
+  app: PropTypes.shape({
+    appState: PropTypes.string,
+    question: PropTypes.string,
+    answers: PropTypes.array,
+  }),
+
+  // player props
+  player: PropTypes.shape({
+    playerName: PropTypes.string,
+    aboutMe: PropTypes.bool,
+    answerSubmitted: PropTypes.bool,
+    guessSubmitted: PropTypes.bool,
+  }),
+
+  // gameConsole props
+  gameConsole: PropTypes.shape({
+    players: PropTypes.array,
+    questionAbout: PropTypes.string,
+  })
+};
+
+export default InGamePage;

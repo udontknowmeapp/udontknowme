@@ -15,29 +15,7 @@ import {
 } from '../actions/ConsoleActions';
 import { startNewGame } from '../actions/AppActions';
 
-export default class GameConsolePage extends Component {
-
-  static propTypes = {
-    // app props
-    dispatch: PropTypes.func,
-    app: PropTypes.shape({
-      appState: PropTypes.string,
-      question: PropTypes.string,
-      answers: PropTypes.array
-    }),
-
-    // gameConsole props
-    gameConsole: PropTypes.shape({
-      players: PropTypes.array,
-      questionAbout: PropTypes.string,
-      submittedAnswers: PropTypes.array,
-      submittedGuesses: PropTypes.array,
-      guessResults: PropTypes.array,
-      points: PropTypes.array,
-      timer: PropTypes.number
-    })
-  }
-
+class GameConsolePage extends Component {
   constructor(props) {
     super(props);
 
@@ -160,3 +138,26 @@ export default class GameConsolePage extends Component {
     );
   }
 }
+
+GameConsolePage.propTypes = {
+  // app props
+  dispatch: PropTypes.func,
+  app: PropTypes.shape({
+    appState: PropTypes.string,
+    question: PropTypes.string,
+    answers: PropTypes.array
+  }),
+
+  // gameConsole props
+  gameConsole: PropTypes.shape({
+    players: PropTypes.array,
+    questionAbout: PropTypes.string,
+    submittedAnswers: PropTypes.array,
+    submittedGuesses: PropTypes.array,
+    guessResults: PropTypes.array,
+    points: PropTypes.array,
+    timer: PropTypes.number
+  })
+};
+
+export default GameConsolePage;

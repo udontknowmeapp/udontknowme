@@ -1,13 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 
-export default class LobbyComponent extends Component {
-
-  static propTypes = {
-    playerName: PropTypes.string,
-    players: PropTypes.array,
-    actions: PropTypes.object
-  }
-
+class LobbyComponent extends Component {
   render() {
     const { playerName, players, actions } = this.props;
 
@@ -31,3 +24,11 @@ export default class LobbyComponent extends Component {
     );
   }
 }
+
+LobbyComponent.propTypes = {
+  playerName: PropTypes.string,
+  players: PropTypes.array,
+  actions: PropTypes.object
+};
+
+export default LobbyComponent;

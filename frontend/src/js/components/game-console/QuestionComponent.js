@@ -1,15 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 
-export default class QuestionComponent extends Component {
-
-  static propTypes = {
-    timer: PropTypes.number,
-    question: PropTypes.string,
-    about: PropTypes.string,
-    submittedAnswers: PropTypes.array,
-    actions: PropTypes.object
-  }
-
+class QuestionComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -62,3 +53,13 @@ export default class QuestionComponent extends Component {
     );
   }
 }
+
+QuestionComponent.propTypes = {
+  timer: PropTypes.number,
+  question: PropTypes.string,
+  about: PropTypes.string,
+  submittedAnswers: PropTypes.array,
+  actions: PropTypes.object
+};
+
+export default QuestionComponent;

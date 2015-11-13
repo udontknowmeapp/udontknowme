@@ -1,14 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import states from '../../constants/stateConstants';
 
-export default class GameLobby extends Component {
-
-  static propTypes = {
-    appState: PropTypes.string,
-    players: PropTypes.array,
-    actions: PropTypes.obj
-  }
-
+class GameLobby extends Component {
   componentDidUpdate(prevProps) {
     const { appState, actions } = this.props;
     if (appState === states.INTRO && prevProps.appState === states.LOBBY) {
@@ -45,3 +38,11 @@ export default class GameLobby extends Component {
     );
   }
 }
+
+GameLobby.propTypes = {
+  appState: PropTypes.string,
+  players: PropTypes.array,
+  actions: PropTypes.obj
+}
+
+export default GameLobby;

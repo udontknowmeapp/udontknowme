@@ -1,16 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 
-export default class QuestionComponent extends Component {
-
-  static propTypes = {
-    question: PropTypes.string,
-    aboutMe: PropTypes.bool,
-    questionAbout: PropTypes.string,
-    playerName: PropTypes.string,
-    answerSubmitted: PropTypes.bool,
-    actions: PropTypes.object
-  }
-
+class QuestionComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -72,3 +62,14 @@ export default class QuestionComponent extends Component {
     actions.submitAnswer(answer);
   }
 }
+
+QuestionComponent.propTypes = {
+  question: PropTypes.string,
+  aboutMe: PropTypes.bool,
+  questionAbout: PropTypes.string,
+  playerName: PropTypes.string,
+  answerSubmitted: PropTypes.bool,
+  actions: PropTypes.object
+};
+
+export default QuestionComponent;

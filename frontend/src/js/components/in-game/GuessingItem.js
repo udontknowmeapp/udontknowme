@@ -1,12 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 
-export default class GuessingItem extends Component {
-
-  static propTypes = {
-    answer: PropTypes.string,
-    submitGuess: PropTypes.func
-  }
-
+class GuessingItem extends Component {
   render() {
     const { answer } = this.props;
 
@@ -27,3 +21,10 @@ export default class GuessingItem extends Component {
     submitGuess(answer.answer);
   }
 }
+
+GuessingItem.propTypes = {
+  answer: PropTypes.string,
+  submitGuess: PropTypes.func
+};
+
+export default GuessingItem;
