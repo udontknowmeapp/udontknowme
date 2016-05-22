@@ -29,7 +29,7 @@ defmodule GameTest do
 
   ### Game.add_player/2 ###
 
-  test "it adds a player as expected", context do
+  test "it adds a player as expected" do
     {:ok, g} = Game.new
     Game.add_player(g, "Billy")
     player = Game.get(g).players

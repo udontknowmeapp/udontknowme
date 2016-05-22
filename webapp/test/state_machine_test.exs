@@ -7,6 +7,14 @@ defmodule StateMachineTest do
     {:ok, [sm: sm]}
   end
 
+  def new_game(sm) do
+    StateMachine.read_message(sm, %{
+      message: "new_game",
+      player_name: nil,
+      player_type: "console"
+    })
+  end
+
   ### StateMachine.new/0 ###
 
   test "it starts the state machine with default data", context do
@@ -32,11 +40,7 @@ defmodule StateMachineTest do
 
   test "it starts a new game", context do
     %{sm: sm} = context
-    {:ok, result} = StateMachine.read_message(sm, %{
-      message: "new_game",
-      player_name: nil,
-      player_type: "console"
-    })
+    {:ok, result} = new_game(sm)
 
     assert result[:state] === "lobby", "it should remain in the lobby state"
     assert result[:data][:message] === "new_game", "it should say a new game started"
@@ -50,6 +54,7 @@ defmodule StateMachineTest do
 
   test "it performs the current_state logic if player_type === `console`", context do
     %{sm: sm} = context
+    {:ok, _} = new_game(sm)
     {:ok, result} = StateMachine.read_message(sm, %{
       message: "identify",
       player_name: nil,
@@ -60,20 +65,50 @@ defmodule StateMachineTest do
     assert result[:data][:players] === [], "it returns the (empty) players List"
   end
 
-  test "it performs the current_state logic if player_type === `console` && state === `lobby`" do
+  test "it performs the current_state logic if player_type === `player` && state === `lobby`", context do
+    %{sm: sm} = context
+    {:ok, _} = new_game(sm)
+    {:ok, result} = StateMachine.read_message(sm, %{
+      message: "identify",
+      player_name: "Billy",
+      player_type: "player"
+    })
 
+    assert result[:state] === "lobby", "it stays in the lobby state"
+    assert result[:data][:players] === ["Billy"], "it adds the new player to the game"
   end
 
-  test "it performs the current_state logic if player is in game" do
+  test "it performs the current_state logic if player is in game", context do
+    %{sm: sm} = context
+    {:ok, _} = new_game(sm)
+    {:ok, _} = StateMachine.read_message(sm, %{
+      message: "identify",
+      player_name: "Billy",
+      player_type: "player"
+    })
+    {:ok, result} = StateMachine.read_message(sm, %{
+      message: "identify",
+      player_name: "Billy",
+      player_type: "player"
+    })
 
+    assert result[:state] === "lobby", "it stays in lobby state"
+    assert result[:data][:players] === ["Billy"], "it only adds Billy to the game once"
   end
 
   test "it errors out if the game is started and player not in game" do
-
+    # TODO: Need to update next state to check
   end
 
-  test "it errors out if invalid player type" do
+  test "it errors out if invalid player type", context do
+    %{sm: sm} = context
+    {:error, message} = StateMachine.read_message(sm, %{
+      message: "identify",
+      player_type: "invalid",
+      player_name: nil
+    })
 
+    assert message[:data][:error] === "Bad Player Type"
   end
 
   ### StateMachine.state_lobby/2 (private, via StateMachine.read_message/2) ###

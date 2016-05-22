@@ -24,10 +24,11 @@ defmodule Question do
   """
   def add_answer(q, player, text) do
     Agent.update(q, fn question ->
-      Map.merge(question, %{
+      %{
+        question |
         answers: question.answers ++ [%Answer{player: player, answer: text}],
         guesses: Map.merge(question.guesses, %{text => []})
-      })
+      }
     end)
   end
 
@@ -42,11 +43,13 @@ defmodule Question do
     answer = List.first(answers)
     if !Enum.any?(answers, &(&1.player === player)) do
       Agent.update(q, fn question ->
-        guesses = Map.merge(
-          question.guesses,
-          %{answer.answer => question.guesses[answer.answer] ++ [player]}
-        )
-        Map.put(question, :guesses, guesses)
+        %{
+          question |
+          guesses: Map.merge(
+            question.guesses,
+            %{answer.answer => question.guesses[answer.answer] ++ [player]}
+          )
+        }
       end)
     end
   end
@@ -144,7 +147,7 @@ defmodule Question do
 
   defp get_answers_map(question, answer) do
     %{
-      by: Player.get(answer.player).name,
+      by: Player.get(answer.player).name, # TODO: All players who wrote the same answer
       answer: answer.answer,
       guessed_by: Enum.map(question.guesses[answer.answer], &(Player.get(&1).name))
     }

@@ -15,9 +15,7 @@ defmodule Game do
   def add_player(g, name) do
     Agent.update(g, fn game ->
       {:ok, new_player} = Player.new(name)
-      Map.merge(game, %{
-        players: game.players ++ [new_player]
-      })
+      %{game | players: game.players ++ [new_player]}
     end)
   end
 
@@ -33,12 +31,13 @@ defmodule Game do
     questions = Enum.take_random(get_list, num_players * 2)
 
     Agent.update(g, fn game ->
-      Map.merge(game, %{
-        questions: Enum.map(0..Enum.count(double_players) - 1, fn i ->
+      %{
+        game |
+        questions: (0..Enum.count(double_players) - 1) |> Enum.map(fn i ->
           {:ok, q} = Question.new(Enum.at(questions, i), Enum.at(double_players, i))
           q
         end)
-      })
+      }
     end)
   end
 
@@ -52,12 +51,7 @@ defmodule Game do
   end
 
   def next_question(g) do
-    Agent.update(g, fn game ->
-      Map.merge(game, %{
-        question_index: game.question_index + 1
-      })
-    end)
-
+    Agent.update(g, fn game -> %{game | question_index: game.question_index + 1} end)
     game = get(g)
     Enum.at(game.questions, game.question_index)
     |> Question.get

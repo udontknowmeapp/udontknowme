@@ -1,4 +1,5 @@
 defmodule StateMachine do
+  use Timex
   require Game
 
   defstruct game: nil, current_state: "lobby", timer: nil
@@ -41,33 +42,17 @@ defmodule StateMachine do
   ### State Functions ###
 
   defp next_state(sm, state) do
-    Agent.update(sm, fn game ->
-      Map.merge(game, %{current_state: state})
-    end)
+    Agent.update(sm, fn game -> %{game | current_state: state} end)
     do_state(sm, %{})
-  end
-
-  defp perform_state_checks(sm, callbacks), do: _perform_state_checks(sm, callbacks, nil)
-
-  defp _perform_state_checks(_, [], result), do: {:ok, result}
-  defp _perform_state_checks(sm, [cb | remainings], result) do
-    # NOTE: _perform_state_checks fails in the case below without the module prefix.
-    # Likely something to do with an array of clojures, based on the error:
-    # ** (CompileError) lib/state_machine.ex:60: undefined function _perform_state_checks/2
-    #     (stdlib) lists.erl:1337: :lists.foreach/2
-    #     (stdlib) erl_eval.erl:669: :erl_eval.do_apply/6
-    case cb.(result) do
-      {:continue, result}     -> StateMachine._perform_state_checks(remainings, result)
-      {:state_change, state}  -> next_state(sm, state)
-    end
   end
 
   defp new_game(sm) do
     {:ok, game} = Game.new
-    Agent.update(sm, &(Map.merge(&1, %{
+    Agent.update(sm, &(%{
+      &1 |
       game: game,
       current_state: "lobby"
-    })))
+    }))
 
     message = blank_message
     |> Map.put(:state, get(sm).current_state)
@@ -82,7 +67,7 @@ defmodule StateMachine do
       "console" -> do_state(sm, payload)
       "player" ->
         cond do
-          get(sm).current_state === 'lobby' ->
+          get(sm).current_state === "lobby" ->
             do_state(sm, payload)
           player_in_game?(sm, payload[:name]) ->
             do_state(sm, payload)
@@ -93,222 +78,156 @@ defmodule StateMachine do
     end
   end
 
-  defp state_lobby(sm, payload) do
-    %{player_type: type} = payload
+  defp state_lobby(sm, %{player_type: "player", message: "start"}), do: next_state(sm, "intro")
+  defp state_lobby(sm, %{player_type: "player", player_name: name}) do
+    if !player_in_game?(sm, name) do
+      get(sm).game |> Game.add_player(name)
+    end
+    state_lobby(sm, %{})
+  end
+  defp state_lobby(sm, _) do
+    message = blank_message
+    |> Map.put(:state, get(sm).current_state)
+    message = put_in(message[:data][:players], get_players(sm))
 
-    perform_state_checks(sm, [
-      # First, add players & potentially trigger the intro
-      fn result ->
-        cond do
-          type === "player" ->
-            %{player_name: name, message: message} = payload
-            if !StateMachine.player_in_game?(name) do
-              get(sm).game |> Game.add_player(name)
-            end
-            if message === "start" do
-              {:state_change, "intro"}
-            else
-              {:continue, result}
-            end
-          true -> {:continue, result}
-        end
-      end,
-
-      # Second, return state snapshot
-      fn _ ->
-        message = blank_message
-        |> Map.put(:state, get(sm).current_state)
-        {:continue, put_in(message[:data][:players], get_players(sm))}
-      end
-    ])
+    {:ok, message}
   end
 
-  defp state_intro(sm, payload) do
-    %{player_type: type, message: message} = payload
+  defp state_intro(sm, %{player_type: "console", message: "intro_complete"}) do
+    game = get(sm).game
+    Game.setup_questions(game)
+    Game.next_question(game)
 
-    perform_state_checks(sm, [
-      fn result ->
-        if type === "console" && message === "intro_complete" do
-          get(sm).game |> Game.setup_questions
-          get(sm).game |> Game.next_question
-          {:state_change, "question_ask"}
-        else
-          {:continue, result}
-        end
-      end,
+    next_state(sm, "question_ask")
+  end
+  defp state_intro(sm, _), do: {:ok, %{blank_message | state: get(sm).current_state}}
 
-      fn _ ->
-        {:continue, Map.merge(blank_message, %{state: Game.get(sm).current_state})}
-      end
-    ])
+  defp state_question_ask(sm, %{player_type: "system", message: "timer_over"}), do: next_state(sm, "question_guess")
+  defp state_question_ask(sm, %{player_type: "player", message: message}) do
+    %{game: game} = get(sm)
+    player = Game.get_player_by_name(game)
+    question = Game.current_question(game) |> Question.get
+
+    Game.current_question(game)
+    |> Question.add_answer(player, message)
+
+    cond do
+      Enum.count(question.answers) === Game.get(game) |> Enum.count ->
+        Agent.update(sm, &(%{&1 | timer: Time.now}))
+        next_state(sm, "question_guess")
+      player === question.about_player ->
+        Agent.update(sm, &(%{&1 | timer: Time.now}))
+        state_question_ask(sm, %{})
+      true -> state_question_ask(sm, %{})
+    end
+  end
+  defp state_question_ask(sm, _) do
+    %{game: game, current_state: state} = get(sm)
+    question = Game.current_question(game) |> Question.get
+
+    message = blank_message
+    |> Map.put(:state, state)
+    message = put_in(message[:data][:about], Player.get(question.about_player).name)
+    message = put_in(message[:data][:question], question.question)
+    message = put_in(message[:data][:submitted_answers], Enum.map(question.answers, &(Player.get(&1.player).name)))
+    message = put_in(message[:data], :timer, seconds_left(sm))
+
+    {:ok, message}
   end
 
-  defp state_question_ask(sm, payload) do
-    %{player_type: type, player_name: name, message: message} = payload
-    q = get(sm).game |> Game.current_question
-    question = Question.get(q)
+  defp state_question_guess(sm, %{player_type: "system", message: "timer_over"}) do
+    get(sm).game
+    |> Game.current_question
+    |> Question.award_points
 
-    perform_state_checks(sm, [
-      fn result ->
-        if type === "system" && message === "timer_over" do
-          {:state_change, "question_guess"}
-        else
-          {:continue, result}
-        end
-      end,
+    next_state(sm, "show_results")
+  end
+  defp state_question_guess(sm, %{player_type: "player", message: message}) do
+    %{game: game} = get(sm)
+    player = Game.get_player_by_name(game)
+    q = Game.current_question(game)
 
-      fn result ->
-        if type === "player" do
-          player = get(sm).game |> Game.get_player_by_name(name)
-          Question.add_answer(q, player, message)
-          cond do
-            player === question.about_player ->
-              # TODO: Set timer
-              {:continue, result}
-            Enum.count(question.answers) === get(sm).game |> Game.get |> Enum.count ->
-              # TODO: Set timer for next state
-              {:state_change, "question_guess"}
-            true ->
-              {:continue, result}
-          end
-        else
-          {:continue, result}
-        end
-      end,
+    Question.add_guess(q, player, message)
 
-      fn _ ->
-        message = blank_message
-        |> Map.put(:state, get(sm).current_state)
-        message = put_in(message[:data][:about], Player.get(question.about_player).name)
-        message = put_in(message[:data][:question], question.question)
-        message = put_in(message[:data][:submitted_answers], Enum.map(question.answers, &(Player.get(&1.player).name)))
-        # TODO: timer
-        # put_in(message[:data], :timer, seconds_left)
+    expected_num_guesses = (Game.get(game).players |> Enum.count) - 1
+    if Question.num_guesses(q) === expected_num_guesses do
+      Agent.update(sm, &(%{&1 | timer: nil}))
+      Question.award_points(q)
+      next_state(sm, "show_results")
+    else
+      state_question_guess(sm, %{})
+    end
+  end
+  defp state_question_guess(sm, _) do
+    question = get(sm).game
+    |> Game.current_question
+    |> Question.get
 
-        {:continue, message}
-      end
-    ])
+    message = blank_message
+    |> Map.put(:state, get(sm).current_state)
+
+    message = put_in(message[:data], :timer, seconds_left(sm))
+
+    # For each unique answer, get a list of players that submitted
+    answers = Enum.uniq(question.answers)
+    |> Enum.map(fn answer ->
+      players = Enum.filter(question.answers, &(&1.answer === answer.answer))
+      |> Enum.map(&(Player.get(&1.player).name))
+      %{
+        answer: answer.answer,
+        players: players
+      }
+    end)
+    message = put_in(message[:data][:answers], answers)
+
+    # Get list of all players who have submitted aanswers across all answers
+    submitted_guesses = Map.values(question.guesses)
+    |> Enum.reduce([], fn(guess_list, acc) ->
+      for p <- guess_list, do: [Player.get(p).name | acc]
+    end)
+    message = put_in(message[:data][:submitted_guesses], submitted_guesses)
+
+    {:ok, message}
   end
 
-  def state_question_guess(sm, payload) do
-    %{player_type: type, player_name: name, message: message} = payload
-    q = get(sm).game |> Game.current_question
-    question = Question.get(q)
+  defp state_show_results(sm, %{player_type: "console", message: "results_complete"}), do: next_state(sm, "show_points")
+  defp state_show_results(sm, _) do
+    message = blank_message
+    |> Map.put(:state, get(sm).current_state)
 
-    perform_state_checks(sm, [
-      fn result ->
-        if type === "system" && message === "timer_over" do
-          {:state_change, "show_results"}
+    who_guessed_what = get(sm).game
+    |> Game.current_question
+    |> Question.who_guessed_what
+
+    answers = Stream.with_index(who_guessed_what)
+    |> Enum.map(fn result ->
+      data = Enum.at(result, 0)
+      index = Enum.at(result, 1)
+      %{
+        answer: data[:answer],
+        guessed: data[:guessed_by],
+        wrote: [data[:by]],
+        truth: if index === Enum.count(who_guessed_what) - 1 do
+          true
         else
-          {:continue, result}
+          false
         end
-      end,
+      }
+    end)
 
-      fn result ->
-        if type === "player" do
-          player = get(sm).game |> Game.get_player_by_name(name)
-          Question.add_guess(q, player, message)
-
-          expected_num_guesses = (Game.get(get(sm).game).players |> Enum.count) - 1
-          if Question.num_guesses(q) === expected_num_guesses do
-            Agent.update(sm, &(Map.merge(&1, %{timer: nil})))
-            Question.award_points(q)
-            {:state_change, "show_results"}
-          else
-            {:continue, result}
-          end
-        else
-          {:continue, result}
-        end
-      end,
-
-      fn _ ->
-        message = blank_message
-        |> Map.put(:state, get(sm).current_state)
-
-        # TODO: Timer
-        # put_in(message[:data], :timer, seconds_left)
-
-        answers = Enum.uniq(question.answers)
-        |> Enum.map(fn answer ->
-          players = Enum.filter(question.answers, &(&1.answer === answer.answer))
-          |> Enum.map(&(Player.get(&1.player).name))
-          %{
-            answer: answer.answer,
-            players: players
-          }
-        end)
-        message = put_in(message[:data][:answers], answers)
-
-        submitted_guesses = Map.values(question.guesses)
-        |> Enum.reduce([], fn(guess_list, acc) ->
-          for p <- guess_list, do: [Player.get(p).name | acc]
-        end)
-        message = put_in(message[:data][:submitted_guesses], submitted_guesses)
-
-        {:continue, message}
-      end
-    ])
+    message = put_in(message[:data][:answers], answers)
+    {:ok, message}
   end
 
-  defp state_show_results(sm, payload) do
-    %{player_type: type, message: message} = payload
-    q = get(sm).game |> Game.current_question
-    state = get(sm).current_state
-
-    perform_state_checks(sm, [
-      fn result ->
-        cond do
-          type === "console" && message === "results_complete" -> {:state_change, "show_points"}
-          true -> {:continue, result}
-        end
-      end,
-
-      fn _ ->
-        message = blank_message
-        |> Map.put(:state, get(sm).current_state)
-
-        who_guessed_what = Question.who_guessed_what(q)
-        answers = Stream.with_index(who_guessed_what)
-        |> Enum.map(fn result ->
-          data = Enum.at(result, 0)
-          index = Enum.at(result, 1)
-          %{
-            answer: data[:answer],
-            guessed: data[:guessed_by],
-            wrote: [data[:by]],
-            truth: if index === Enum.count(who_guessed_what) - 1 do
-              true
-            else
-              false
-            end
-          }
-        end)
-
-        {:continue, put_in(message[:data][:answers], answers)}
-      end
-    ])
+  defp state_show_points(sm, %{player_type: "console", message: "points_complete"}) do
+    game = get(sm).game |> Game.get
+    if game.question_index === Enum.count(game.questions) do
+      next_state(sm, "game_over")
+    else
+      next_state(sm, "question_ask")
+    end
   end
-
-  defp state_show_points(sm, payload) do
-    %{player_type: type, message: message} = payload
-    perform_state_checks(sm, [
-      fn result ->
-        if type === "console" && message === "points_complete" do
-          game = get(sm).game |> Game.get
-          if game.question_index === Enum.count(game.questions) do
-            {:state_change, "game_over"}
-          else
-            {:state_change, "question_ask"}
-          end
-        else
-          {:continue, result}
-        end
-      end,
-
-      fn _ -> {:continue, results_message(sm)} end
-    ])
-  end
+  defp state_show_points(sm, _), do: {:ok, results_message(sm)}
 
   defp state_game_over(sm, _), do: {:ok, results_message(sm)}
 
@@ -341,15 +260,19 @@ defmodule StateMachine do
   end
 
   defp results_message(sm) do
-    # NOTE: message[:state] = get(sm).current_state fails with error:
-    # ** (CompileError) lib/state_machine.ex:330: cannot invoke remote function Access.get/2 inside match
+    %{game: game, current_state: state} = get(sm)
     message = blank_message
-    |> Map.put(:state, get(sm).current_state)
+    |> Map.put(:state, state)
 
-    by_points = get(sm).game
-    |> Game.players_sorted_by_points
+    by_points = Game.players_sorted_by_points(game)
     |> Enum.map(&(Player.get(&1)))
 
-    put_in(message[:data][:points], by_points)
+    message = put_in(message[:data][:points], by_points)
+    message
+  end
+
+  defp seconds_left(sm) do
+    %{timer: timer} = get(sm)
+    Time.diff(Time.now, timer, :seconds)
   end
 end

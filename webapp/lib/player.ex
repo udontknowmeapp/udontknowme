@@ -6,6 +6,6 @@ defmodule Player do
   def get(p), do: Agent.get(p, &(&1))
 
   def add_points(p, add) do
-    Agent.update(p, &(Map.merge(&1, %{points: &1.points + add})))
+    Agent.update(p, &(%{&1 | points: &1.points + add}))
   end
 end
